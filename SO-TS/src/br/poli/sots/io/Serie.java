@@ -5,8 +5,12 @@ import java.util.List;
 
 public class Serie {
 
+	//Série (em ordem) classificada por critério de ano
 	public List<SerieYear> timedSerie;
+	
+	//Série (em ordem) sem classificação 
 	public List<Integer> fullSerie;
+	
 	public List<Integer> minimumPerMonth;
 	public List<Integer> maximumPerMonth;
 	public List<Integer> averagePerMonth;
