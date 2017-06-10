@@ -1,7 +1,9 @@
-package br.poli.sots.io;
+package br.poli.sots.utils.serie;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import br.poli.sots.io.CSVReader;
 
 public class Serie {
 

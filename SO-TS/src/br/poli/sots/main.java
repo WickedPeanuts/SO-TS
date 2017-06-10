@@ -1,6 +1,6 @@
 package br.poli.sots;
 
-import br.poli.sots.io.Serie;
+import br.poli.sots.utils.serie.Serie;
 
 public class main {
 
