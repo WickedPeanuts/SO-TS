@@ -9,12 +9,15 @@ public class RootMeanSquareError extends AbstractFunction {
     
     public double calculateFitness(double[] position)
     {
-        double sum = 0;
+    	//RMSE logic here
+    	double sum = 0;
+    	/*
+        
 
         for (int x = 0; x < position.length - 1; x++)
         {
             sum += (100 * Math.pow((Math.pow(position[x], 2) - position[x + 1]), 2) + Math.pow((position[x] - 1), 2));
-        }
+        }*/
 
         return sum;
     }
