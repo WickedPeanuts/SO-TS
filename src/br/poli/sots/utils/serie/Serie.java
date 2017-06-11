@@ -11,11 +11,15 @@ public class Serie {
 	public List<SerieYear> timedSerie;
 	
 	//Série (em ordem) sem classificação 
-	public List<Integer> fullSerie;
+	public List<Double> fullSerie;
 	
-	public List<Integer> minimumPerMonth;
-	public List<Integer> maximumPerMonth;
-	public List<Integer> averagePerMonth;
+	public List<Double> trainingSet;
+	public List<Double> comparingSet;
+	public List<Double> forecastSet;
+	
+	public List<Double> minimumPerMonth;
+	public List<Double> maximumPerMonth;
+	public List<Double> averagePerMonth;
 	
 	int minimumPerMonthAverage, averagePerMonthAverage, maximumPerMonthAverage;
 		
@@ -23,10 +27,12 @@ public class Serie {
 		List<String> textLines = CSVReader.ReadFile(fileName);
 
 		timedSerie = new LinkedList<SerieYear>();
-		fullSerie = new LinkedList<Integer>();
-		minimumPerMonth = new LinkedList<Integer>();
-		maximumPerMonth = new LinkedList<Integer>();
-		averagePerMonth = new LinkedList<Integer>();
+		fullSerie = new LinkedList<Double>();
+		minimumPerMonth = new LinkedList<Double>();
+		maximumPerMonth = new LinkedList<Double>();
+		averagePerMonth = new LinkedList<Double>();
+		trainingSet = new LinkedList<Double>();
+		forecastSet = new LinkedList<Double>();
 				
 		for(String line : textLines){
 			String[] arrayLine = line.split(",");
@@ -37,7 +43,7 @@ public class Serie {
 			//Inicia a lista de mínimos
 			if (arrayLine[0].equals("MIN")){
 				for (int i = 1; i < arrayLine.length - 1; i++){
-					minimumPerMonth.add(Integer.parseInt(arrayLine[i]));
+					minimumPerMonth.add(Double.parseDouble(arrayLine[i]));
 				}
 				
 				minimumPerMonthAverage = Integer.parseInt(arrayLine[arrayLine.length - 1]);
@@ -47,7 +53,7 @@ public class Serie {
 			//Inicia a lista de médias
 			if (arrayLine[0].equals("MED")) {
 				for (int i = 1; i < arrayLine.length - 1; i++){
-					averagePerMonth.add(Integer.parseInt(arrayLine[i]));
+					averagePerMonth.add(Double.parseDouble(arrayLine[i]));
 				}
 				
 				averagePerMonthAverage = Integer.parseInt(arrayLine[arrayLine.length - 1]);
@@ -57,7 +63,7 @@ public class Serie {
 			//Inicia a lista de máximos
 			if (arrayLine[0].equals("MAX")) {
 				for (int i = 1; i < arrayLine.length - 1; i++){
-					maximumPerMonth.add(Integer.parseInt(arrayLine[i]));
+					maximumPerMonth.add(Double.parseDouble(arrayLine[i]));
 				}
 				
 				maximumPerMonthAverage = Integer.parseInt(arrayLine[arrayLine.length - 1]);
@@ -68,7 +74,7 @@ public class Serie {
 			
 			serieYear.year = Integer.parseInt(arrayLine[0]);
 			for (int i = 1; i < arrayLine.length - 1; i++){
-				serieYear.riverFlow.add(Integer.parseInt(arrayLine[i]));
+				serieYear.riverFlow.add(Double.parseDouble(arrayLine[i]));
 			}
 			serieYear.average = Integer.parseInt(arrayLine[arrayLine.length - 1]);
 			
