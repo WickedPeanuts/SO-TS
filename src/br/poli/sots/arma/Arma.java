@@ -12,10 +12,11 @@ public class Arma {
 	@SuppressWarnings("unchecked")
 	public Arma (Serie serie, double training, double theta1, double theta2, double phi1, double phi2){
 		this.serie = serie;
-		setParameters(theta1, theta2, phi1, phi2);
 		
 		serie.trainingSet = new LinkedList<Double>(serie.fullSerie.subList(0, (int)(serie.fullSerie.size()*training/100)));
 		serie.comparingSet = new LinkedList<Double>(serie.fullSerie.subList((int)(serie.fullSerie.size()*training/100), serie.fullSerie.size()));
+		
+		setParameters(theta1, theta2, phi1, phi2);
 		
 		serie.padronize();
 	}

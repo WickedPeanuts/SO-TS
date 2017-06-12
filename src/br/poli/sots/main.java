@@ -1,22 +1,33 @@
 package br.poli.sots;
 
 import br.poli.sots.arma.Arma;
+import br.poli.sots.swarmintelligence.pso.utils.AbstractPSOParticle;
+import br.poli.sots.swarmintelligence.pso.utils.EConstrictionFactor;
+import br.poli.sots.swarmintelligence.pso.utils.ETopology;
+import br.poli.sots.swarmintelligence.pso.utils.Swarm;
+import br.poli.sots.swarmintelligence.utils.EFunction;
 import br.poli.sots.utils.serie.Serie;
 
 public class main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Serie s = new Serie("Passo Real");
-		Serie n = new Serie("Furnas");
-		Serie m = new Serie("Emborcacao");
-		Serie o = new Serie("Sobradinho");
 		
-		Arma arma = new Arma(s, 99, 0.9, 1.1, 0.5, 0.34);
-		arma.forecastAll();
 		
-		System.out.println(arma.serie.comparingSet + "\n" + arma.serie.forecastSet);
-		System.out.println(arma.serie.comparingSet.size() + "\n" + arma.serie.forecastSet.size());
+		Series.armaSerie = new Arma(Series.emborcacao, 98, 1, 1, 1, 1);
+		
+		Swarm s = new Swarm(ETopology.Global, EFunction.RootMeanSquareError, EConstrictionFactor.ClercConstriction);
+		
+		s.InitializeSwarm();
+		s.updatePopulation(true);
+		double[] particlePos = s.particleList.get(0).positionPBest;
+		
+		
+		Series.armaSerie.setParameters(particlePos[0], particlePos[1], particlePos[2], particlePos[3]);
+		Series.armaSerie.forecastAll();
+		
+		System.out.println(Series.armaSerie.serie.comparingSet + "\n" + Series.armaSerie.serie.forecastSet);
+		System.out.println(Series.armaSerie.serie.comparingSet.size() + "\n" + Series.armaSerie.serie.forecastSet.size());
 		System.out.println();
 	}
 

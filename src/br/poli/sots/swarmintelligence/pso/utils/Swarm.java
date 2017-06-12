@@ -8,18 +8,18 @@ import br.poli.sots.swarmintelligence.utils.EFunction;
 
 public class Swarm
 {
-    public List<AbstractPSOParticle> garticleList;
+    public List<AbstractPSOParticle> particleList;
     public List<Double> globalBestLog;
 
     public Swarm(ETopology topology, EFunction function, EConstrictionFactor constrictionFactor)
     {
         AbstractPSOParticle.ClearStaticFields();
-        garticleList = AbstractPSOParticle.createSwarm(topology, function, constrictionFactor, Parameters.PARTICLE_AMOUNT);
+        particleList = AbstractPSOParticle.createSwarm(topology, function, constrictionFactor, Parameters.PARTICLE_AMOUNT);
     }
 
     public void InitializeSwarm()
     {
-        for (AbstractPSOParticle particle : garticleList)
+        for (AbstractPSOParticle particle : particleList)
         {
             particle.initialize();
         }
@@ -32,7 +32,7 @@ public class Swarm
 
         for (int i = 0; i < Parameters.ITERATION_AMOUNT; i++)
         {
-            for(AbstractPSOParticle particle : garticleList)
+            for(AbstractPSOParticle particle : particleList)
             {
                 particle.updateSpeed();
                 particle.updatePosition();
