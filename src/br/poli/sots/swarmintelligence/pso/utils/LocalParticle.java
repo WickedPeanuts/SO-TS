@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.poli.sots.Parameters;
+import br.poli.sots.swarmintelligence.utils.EFunction;
 
 class LocalParticle extends AbstractPSOParticle
 {

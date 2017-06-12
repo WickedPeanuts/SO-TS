@@ -28,7 +28,10 @@ public class Arma {
 		this.theta2 = theta2;
 		this.phi1 = phi1;
 		this.phi2 = phi2;
+<<<<<<< HEAD
 		
+=======
+>>>>>>> 2b633fa393d1e7679f939e0ee6aa5e45b7e762ed
 		serie.forecastSet.clear();
 	}
 	

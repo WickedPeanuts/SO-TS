@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 import br.poli.sots.Parameters;
+import br.poli.sots.swarmintelligence.utils.AbstractFunction;
+import br.poli.sots.swarmintelligence.utils.EFunction;
 
 public abstract class AbstractPSOParticle
 {

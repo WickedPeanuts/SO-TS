@@ -1,6 +1,7 @@
 package br.poli.sots.swarmintelligence.pso.utils;
 
 import br.poli.sots.Parameters;
+import br.poli.sots.swarmintelligence.utils.EFunction;
 
 class GlobalParticle extends AbstractPSOParticle
 {
