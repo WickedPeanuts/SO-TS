@@ -3,6 +3,7 @@ package br.poli.sots.utils.serie;
 import java.util.LinkedList;
 import java.util.List;
 
+import br.poli.sots.arma.Common;
 import br.poli.sots.io.CSVReader;
 
 public class Serie {
@@ -83,5 +84,34 @@ public class Serie {
 		}
 		
 		
+	}
+
+	public void padronize() {
+		double[] standardDeviation = new double[12];
+		
+		//Collect all standardDeviation from each month;
+		for (int i = 0; i < standardDeviation.length; i++){
+			List<Double> monthFlow = new LinkedList<Double>(); 
+			
+			for(SerieYear sy : timedSerie){
+				monthFlow.add(sy.riverFlow.get(i));
+			}
+			
+			standardDeviation[i] = Common.CalculateStandardDeviation(monthFlow);
+		}
+		
+		//Replace with padronized serie
+		for(SerieYear sy : timedSerie){
+			
+			for(int month = 0; month < 12; month++){
+				sy.riverFlow.set(month,
+						(sy.riverFlow.get(month) - averagePerMonth.get(month))/standardDeviation[month]
+					);
+			}
+		}
+		
+		//Set values to fullSerie
+		fullSerie.clear();
+		timedSerie.forEach(x -> fullSerie.addAll(x.riverFlow));
 	}
 }
