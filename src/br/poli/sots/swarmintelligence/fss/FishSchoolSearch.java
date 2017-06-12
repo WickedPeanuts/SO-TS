@@ -4,6 +4,7 @@ import java.util.Random;
 
 import br.poli.sots.*;
 import br.poli.sots.swarmintelligence.pso.utils.*;
+import br.poli.sots.swarmintelligence.utils.EFunction;
 import br.poli.sots.swarmintelligence.utils.RootMeanSquareError;
 
 public class FishSchoolSearch {
@@ -403,6 +404,10 @@ public double calculateSignalFromSchoolWeightVariation(){
 			System.out.println((getBestFitness()+ "").replace('.', ','));
 		}
 		System.out.println("Melhor Fitness = " + getBestFitness());
+	}
+	
+	public double[] getBestPosition(){
+		return this.bestPosition;
 	}
 	
 }
