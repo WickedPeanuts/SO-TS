@@ -1,4 +1,4 @@
-package br.poli.sots.swarmintelligence.pso.utils;
+package br.poli.sots.swarmintelligence.utils;
 
 public enum EFunction
 {

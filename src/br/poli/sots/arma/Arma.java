@@ -28,6 +28,7 @@ public class Arma {
 		this.theta2 = theta2;
 		this.phi1 = phi1;
 		this.phi2 = phi2;
+		serie.forecastSet.clear();
 	}
 	
 	//Prevê o próximo valor do da série, caso a quantidade de valores

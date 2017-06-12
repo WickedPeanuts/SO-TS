@@ -4,6 +4,7 @@ import java.util.Random;
 
 import br.poli.sots.*;
 import br.poli.sots.swarmintelligence.pso.utils.*;
+import br.poli.sots.swarmintelligence.utils.RootMeanSquareError;
 
 public class FishSchoolSearch {
 	private Fish[] school;

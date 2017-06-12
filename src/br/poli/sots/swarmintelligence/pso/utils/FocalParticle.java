@@ -3,6 +3,7 @@ package br.poli.sots.swarmintelligence.pso.utils;
 import java.util.List;
 
 import br.poli.sots.Parameters;
+import br.poli.sots.swarmintelligence.utils.EFunction;
 
 public class FocalParticle extends AbstractPSOParticle
 {
