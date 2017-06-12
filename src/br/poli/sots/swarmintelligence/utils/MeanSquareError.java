@@ -5,13 +5,13 @@ import java.util.List;
 import br.poli.sots.Series;
 import br.poli.sots.arma.Arma;
 
-public class RootMeanSquareError extends AbstractFunction {
+public class MeanSquareError extends AbstractFunction {
 	
-	public static final AbstractFunction instance = new RootMeanSquareError();
+	public static final AbstractFunction instance = new MeanSquareError();
 	
-	private RootMeanSquareError(){
-	    BOUNDARY_MAX =  100;
-	    BOUNDARY_MIN = -100;
+	private MeanSquareError(){
+	    BOUNDARY_MAX =  1;
+	    BOUNDARY_MIN = -1;
 	}
     
     public double calculateFitness(double[] position)
@@ -33,7 +33,7 @@ public class RootMeanSquareError extends AbstractFunction {
         	sum += Math.pow((forecastSet.get(i) - comparingSet.get(i)), 2);
         }
         
-        sum = Math.sqrt(sum/forecastSet.size());
+        sum = sum/forecastSet.size();
 
         return sum;
     }

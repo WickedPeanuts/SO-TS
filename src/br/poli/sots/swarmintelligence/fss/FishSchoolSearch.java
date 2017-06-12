@@ -5,12 +5,12 @@ import java.util.Random;
 import br.poli.sots.*;
 import br.poli.sots.swarmintelligence.pso.utils.*;
 import br.poli.sots.swarmintelligence.utils.EFunction;
-import br.poli.sots.swarmintelligence.utils.RootMeanSquareError;
+import br.poli.sots.swarmintelligence.utils.MeanSquareError;
 
 public class FishSchoolSearch {
 	private Fish[] school;
 	private Random rand;
-	private RootMeanSquareError problema;
+	private MeanSquareError problema;
 	private double[] bestPosition;
 	
 	private double stepIndPercentage;
@@ -19,7 +19,7 @@ public class FishSchoolSearch {
 	private int iterationsNumber;
 	private boolean isMinimumOptimization;
 	
-	public FishSchoolSearch(RootMeanSquareError problem){
+	public FishSchoolSearch(MeanSquareError problem){
 		rand = new Random();
 		this.problema = problem;
 	}

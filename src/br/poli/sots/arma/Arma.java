@@ -8,17 +8,18 @@ import br.poli.sots.utils.serie.Serie;
 public class Arma {
 	public Serie serie;
 	double theta1, theta2, phi1, phi2;
+	double training;
 	
 	@SuppressWarnings("unchecked")
 	public Arma (Serie serie, double training, double theta1, double theta2, double phi1, double phi2){
 		this.serie = serie;
+		this.training = training;
+		serie.padronize();
 		
 		serie.trainingSet = new LinkedList<Double>(serie.fullSerie.subList(0, (int)(serie.fullSerie.size()*training/100)));
 		serie.comparingSet = new LinkedList<Double>(serie.fullSerie.subList((int)(serie.fullSerie.size()*training/100), serie.fullSerie.size()));
 		
 		setParameters(theta1, theta2, phi1, phi2);
-		
-		serie.padronize();
 	}
 	
 	public void setParameters(double theta1, double theta2, double phi1, double phi2){
@@ -28,7 +29,6 @@ public class Arma {
 		this.phi2 = phi2;
 		serie.forecastSet.clear();
 		serie.forecastSet.add(serie.comparingSet.get(0));
-		serie.forecastSet.add(serie.comparingSet.get(1));
 	}
 	
 	//Prevê o próximo valor do da série, caso a quantidade de valores
@@ -36,10 +36,19 @@ public class Arma {
 	public boolean forecastNext(){
 		if (serie.forecastSet.size() >= serie.comparingSet.size()) return false;
 		
-		double x_1 = serie.forecastSet.get(serie.forecastSet.size() - 2);
-		double x_2 = serie.forecastSet.get(serie.forecastSet.size() - 1);
+		double x_1 = serie.comparingSet.get(serie.forecastSet.size() - 1);
 		
-		double newValue = ((theta1 * x_1 + theta2 * x_2) - (phi1 * x_1 + phi2 * x_2));
+		if (serie.forecastSet.size() == 1){
+			x_1 *= theta1;
+			serie.forecastSet.add(x_1);
+			return true;
+		}
+		
+		double x_2 = serie.comparingSet.get(serie.forecastSet.size() - 2);
+		double e_1 = x_1 - serie.forecastSet.get(serie.forecastSet.size() - 1);
+		double e_2 = x_2 - serie.forecastSet.get(serie.forecastSet.size() - 2);
+		
+		double newValue = ((theta1 * x_1 + theta2 * x_2) - (phi1 * e_1 + phi2 * e_2));
 		serie.forecastSet.add(newValue);
 		
 		return true;
@@ -48,5 +57,13 @@ public class Arma {
 	//Prevê toda a série
 	public void forecastAll(){
 		while(forecastNext());
+	}
+	
+	//TODO nome em ingrish
+	public void desazonalize(){
+		serie.desazonalizar();
+		serie.trainingSet = new LinkedList<Double>(serie.fullSerie.subList(0, (int)(serie.fullSerie.size()*training/100)));
+		serie.comparingSet = new LinkedList<Double>(serie.fullSerie.subList((int)(serie.fullSerie.size()*training/100), serie.fullSerie.size()));
+		
 	}
 }

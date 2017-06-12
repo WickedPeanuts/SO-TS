@@ -21,8 +21,8 @@ public abstract class AbstractFunction
 
     public static AbstractFunction instanceFunction(EFunction functionType)
     {
-        if (functionType == EFunction.RootMeanSquareError)
-            return RootMeanSquareError.instance;
+        if (functionType == EFunction.MeanSquareError)
+            return MeanSquareError.instance;
         
         return null;
     }
