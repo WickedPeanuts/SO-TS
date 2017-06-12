@@ -25,7 +25,6 @@ public class Arma {
 		this.theta2 = theta2;
 		this.phi1 = phi1;
 		this.phi2 = phi2;
-		
 		serie.forecastSet.clear();
 		serie.forecastSet.add(serie.comparingSet.get(0));
 		serie.forecastSet.add(serie.comparingSet.get(1));
