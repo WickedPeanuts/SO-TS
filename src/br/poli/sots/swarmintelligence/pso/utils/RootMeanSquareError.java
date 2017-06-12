@@ -4,8 +4,8 @@ public class RootMeanSquareError extends AbstractFunction {
 	
 	public static final AbstractFunction instance = new RootMeanSquareError();
 
-    public float BOUNDARY_MAX =  2;
-    public float BOUNDARY_MIN = -2;
+    public float BOUNDARY_MAX =  100;
+    public float BOUNDARY_MIN = -100;
     
     public double calculateFitness(double[] position)
     {
