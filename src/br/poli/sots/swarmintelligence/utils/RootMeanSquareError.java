@@ -8,9 +8,11 @@ import br.poli.sots.arma.Arma;
 public class RootMeanSquareError extends AbstractFunction {
 	
 	public static final AbstractFunction instance = new RootMeanSquareError();
-
-    public float BOUNDARY_MAX =  100;
-    public float BOUNDARY_MIN = -100;
+	
+	private RootMeanSquareError(){
+	    BOUNDARY_MAX =  100;
+	    BOUNDARY_MIN = -100;
+	}
     
     public double calculateFitness(double[] position)
     {

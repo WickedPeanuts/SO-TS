@@ -2,7 +2,7 @@ package br.poli.sots;
 
 public class Parameters {
 	//PSO
-	public static final int DIMENSION_AMOUNT = 30;
+	public static final int DIMENSION_AMOUNT = 4;
 	public static final int PARTICLE_AMOUNT = 30;
 	public static final int ITERATION_AMOUNT = 10000;
 	public static final int SAMPLE_COUNT = 30;
