@@ -14,13 +14,10 @@ public class Arma {
 		this.serie = serie;
 		setParameters(theta1, theta2, phi1, phi2);
 		
-		serie.padronize();
-		
-		
 		serie.trainingSet = new LinkedList<Double>(serie.fullSerie.subList(0, (int)(serie.fullSerie.size()*training/100)));
 		serie.comparingSet = new LinkedList<Double>(serie.fullSerie.subList((int)(serie.fullSerie.size()*training/100), serie.fullSerie.size()));
-		serie.forecastSet.add(serie.comparingSet.get(0));
-		serie.forecastSet.add(serie.comparingSet.get(1));
+		
+		serie.padronize();
 	}
 	
 	public void setParameters(double theta1, double theta2, double phi1, double phi2){
@@ -28,7 +25,10 @@ public class Arma {
 		this.theta2 = theta2;
 		this.phi1 = phi1;
 		this.phi2 = phi2;
+		
 		serie.forecastSet.clear();
+		serie.forecastSet.add(serie.comparingSet.get(0));
+		serie.forecastSet.add(serie.comparingSet.get(1));
 	}
 	
 	//Prevê o próximo valor do da série, caso a quantidade de valores
