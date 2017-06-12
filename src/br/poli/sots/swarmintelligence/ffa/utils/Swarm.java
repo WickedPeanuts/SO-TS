@@ -8,52 +8,52 @@ import br.poli.sots.swarmintelligence.utils.EFunction;
 
 public class Swarm
 {
-    public List<FireflyParticle> ParticleList;
-    public List<Double> GlobalBestLog;
+    public List<FireflyParticle> particleList;
+    public List<Double> globalBestLog;
 
     public Swarm(EFunction function)
     {
-        FireflyParticle.ClearStaticFields();
-        ParticleList = FireflyParticle.CreateSwarm(function);
+        FireflyParticle.clearStaticFields();
+        particleList = FireflyParticle.createSwarm(function);
     }
 
-    public void InitializeSwarm()
+    public void initializeSwarm()
     {
-        for(FireflyParticle particle : ParticleList)
+        for(FireflyParticle particle : particleList)
         {
-            particle.Initialize();
+            particle.initialize();
         }
     }
 
-    public void UpdatePopulation(boolean saveFitnessLog)
+    public void updatePopulation(boolean saveFitnessLog)
     {
         if (saveFitnessLog)
-            GlobalBestLog = new ArrayList<Double>();
+            globalBestLog = new ArrayList<Double>();
 
         for (int i = 0; i< Parameters.ITERATION_AMOUNT; i++)
         {
-            for(FireflyParticle pA : ParticleList)
+            for(FireflyParticle pA : particleList)
             {
                 //Console.WriteLine("PB: {0}", FireflyParticle.GlobalBest);
                 //if (pA == ParticleList[1]) Console.WriteLine("X: {0} / Y:{1}", FireflyParticle.PositionGBest[0], FireflyParticle.PositionGBest[1]);
                 
-                for (FireflyParticle pB : ParticleList)
+                for (FireflyParticle pB : particleList)
                 {
                     if (pA == pB) continue;
 
-                    pA.UpdateAttractiveness(pB);
-                    pA.UpdatePosition(pB);
-                    pA.UpdateFitness();
+                    pA.updateAttractiveness(pB);
+                    pA.updatePosition(pB);
+                    pA.updateFitness();
                 }
 
-                pA.ForceBoundaries();
+                pA.forceBoundaries();
             }
 
-            FireflyParticle.UpdateAttractivenessFactor();
+            FireflyParticle.updateAttractivenessFactor();
 
             if (saveFitnessLog)
             {
-                GlobalBestLog.add(FireflyParticle.GlobalBestFitness);
+                globalBestLog.add(FireflyParticle.globalBestFitness);
             }
         }
     }
