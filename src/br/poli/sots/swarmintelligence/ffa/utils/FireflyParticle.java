@@ -103,6 +103,7 @@ public class FireflyParticle
     public void UpdateFitness()
     {
         double newPBest = function.calculateFitness(Position);
+        
         if (PersonalBestFitness > newPBest)
         {
             //Update PBest and current Position
