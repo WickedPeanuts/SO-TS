@@ -24,6 +24,9 @@ public abstract class AbstractFunction
         if (functionType == EFunction.MeanSquareError)
             return MeanSquareError.instance;
         
+        if (functionType == EFunction.RootMeanSquareError)
+            return RootMeanSquareError.instance;
+        
         return null;
     }
 }

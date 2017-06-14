@@ -6,6 +6,7 @@ import br.poli.sots.swarmintelligence.fss.FishSchoolSearch;
 import br.poli.sots.swarmintelligence.pso.utils.EConstrictionFactor;
 import br.poli.sots.swarmintelligence.pso.utils.ETopology;
 import br.poli.sots.swarmintelligence.pso.utils.Swarm;
+import br.poli.sots.swarmintelligence.utils.AbstractFunction;
 import br.poli.sots.swarmintelligence.utils.EFunction;
 import br.poli.sots.swarmintelligence.utils.MeanSquareError;
 
@@ -15,13 +16,13 @@ public class main {
 		// TODO Auto-generated method stub
 		
 		
-		Series.armaSerie = new Arma(Series.emborcacao, 97.6, 1, 1, 1, 1);
+		Series.armaSerie = new Arma(Series.emborcacao, 88.3, 1, 1, 1, 1);
 		
 		PSO();
 	}
 	
 	public static void FSS(){
-		MeanSquareError RMSE = (MeanSquareError) MeanSquareError.instanceFunction(EFunction.MeanSquareError);
+		MeanSquareError RMSE = (MeanSquareError) AbstractFunction.instanceFunction(EFunction.MeanSquareError);
 		FishSchoolSearch fss = new FishSchoolSearch(RMSE);
 		fss.Busca(10000, 1);
 		double[] particlePos = fss.getBestPosition();
@@ -51,7 +52,7 @@ public class main {
 	}
 	
 	public static void PSO(){
-		Swarm s = new Swarm(ETopology.Global, EFunction.MeanSquareError, EConstrictionFactor.ClercConstriction);
+		Swarm s = new Swarm(ETopology.Global, EFunction.RootMeanSquareError, EConstrictionFactor.ClercConstriction);
 		
 		s.InitializeSwarm();
 		s.updatePopulation(true);
@@ -60,7 +61,7 @@ public class main {
 		Series.armaSerie.setParameters(particlePos[0], particlePos[1], particlePos[2], particlePos[3]);
 		Series.armaSerie.forecastAll();
 		
-		Series.armaSerie.desazonalize();
+		Series.armaSerie.seasonalizeSerie();
 		
 		System.out.println(Series.armaSerie.serie.comparingSet + "\n" + Series.armaSerie.serie.forecastSet);
 		System.out.println(Series.armaSerie.serie.comparingSet.size() + "\n" + Series.armaSerie.serie.forecastSet.size());

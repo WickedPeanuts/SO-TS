@@ -14,7 +14,8 @@ public class Arma {
 	public Arma (Serie serie, double training, double theta1, double theta2, double phi1, double phi2){
 		this.serie = serie;
 		this.training = training;
-		serie.padronize();
+		
+		serie.deseasonalize();
 		
 		serie.trainingSet = new LinkedList<Double>(serie.fullSerie.subList(0, (int)(serie.fullSerie.size()*training/100)));
 		serie.comparingSet = new LinkedList<Double>(serie.fullSerie.subList((int)(serie.fullSerie.size()*training/100), serie.fullSerie.size()));
@@ -59,11 +60,9 @@ public class Arma {
 		while(forecastNext());
 	}
 	
-	//TODO nome em ingrish
-	public void desazonalize(){
-		serie.desazonalizar();
+	public void seasonalizeSerie(){
+		serie.seasonalize();
 		serie.trainingSet = new LinkedList<Double>(serie.fullSerie.subList(0, (int)(serie.fullSerie.size()*training/100)));
 		serie.comparingSet = new LinkedList<Double>(serie.fullSerie.subList((int)(serie.fullSerie.size()*training/100), serie.fullSerie.size()));
-		
 	}
 }

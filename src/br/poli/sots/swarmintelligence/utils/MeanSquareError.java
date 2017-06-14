@@ -10,8 +10,8 @@ public class MeanSquareError extends AbstractFunction {
 	public static final AbstractFunction instance = new MeanSquareError();
 	
 	private MeanSquareError(){
-	    BOUNDARY_MAX =  1;
-	    BOUNDARY_MIN = -1;
+	    BOUNDARY_MAX =  100;
+	    BOUNDARY_MIN = -100;
 	}
     
     public double calculateFitness(double[] position)
