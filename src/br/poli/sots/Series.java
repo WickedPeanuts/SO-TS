@@ -1,5 +1,6 @@
 package br.poli.sots;
 import br.poli.sots.arma.Arma;
+import br.poli.sots.arma.CustomRegressionArma;
 import br.poli.sots.utils.serie.Serie;
 
 public class Series {
@@ -8,5 +9,6 @@ public class Series {
 	public static Serie passoReal = new Serie("Passo Real"); 
 	public static Serie sobradinho = new Serie("Sobradinho"); 
 	
+	public static CustomRegressionArma crarmaSerie;
 	public static Arma armaSerie;
 }
