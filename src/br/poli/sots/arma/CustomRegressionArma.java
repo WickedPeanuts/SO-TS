@@ -17,7 +17,7 @@ public class CustomRegressionArma {
 		this.serie = serie;
 		this.training = training;
 		
-		serie.deseasonalize();
+		//serie.deseasonalize();
 		
 		theta = new double[Parameters.ARMA_FEEDFOWARD];
 		phi = new double[Parameters.ARMA_BACKWARD];
@@ -44,6 +44,58 @@ public class CustomRegressionArma {
 	public boolean forecastNext(){
 		if (serie.forecastSet.size() >= serie.comparingSet.size()) return false;
 		
+		if (serie.forecastSet.size() == 0){
+			serie.forecastSet.add(serie.comparingSet.get(0));
+			return true;
+		}
+		/*else if (serie.forecastSet.size() == 1){
+			serie.forecastSet.add(theta[0] * serie.comparingSet.get(1));
+		}*/
+		
+		int maxThetaIndex = 0;
+		int maxPhiIndex = 0;
+		
+		if (serie.forecastSet.size() < theta.length){
+			maxThetaIndex = serie.forecastSet.size();
+		} else {
+			maxThetaIndex = theta.length;
+		}
+		
+		if (serie.forecastSet.size() < phi.length){
+			maxPhiIndex = serie.forecastSet.size();
+		} else {
+			maxPhiIndex = phi.length;
+		}		
+		
+		double sum = 0;
+		
+		for (int j = 0, i = serie.forecastSet.size() - maxThetaIndex; i < serie.forecastSet.size(); i++){
+			if (j < maxThetaIndex){
+				j++;
+			}
+			sum += theta[j-1] * serie.comparingSet.get(i);
+		}
+		
+		if (serie.forecastSet.size() > 1){
+			for (int j = 0, i = serie.forecastSet.size() - maxPhiIndex; i < serie.forecastSet.size(); i++){
+				if (j < maxThetaIndex){
+					j++;
+				}
+				
+				double error = serie.forecastSet.get(i) - serie.comparingSet.get(i);
+				//System.out.println("j: " + j + ", i:" + i);
+				sum -= theta[j-1] * error;
+			}
+		}
+		
+		serie.forecastSet.add(sum);
+		//System.out.println("STOP HAMMER TIME");
+		
+		/*for (int i = phiIndex; i < Math.min(serie.forecastSet.size(), theta.length) + serie.forecastSet.size(); i++){
+			sum -= phiIndex * serie.forecastSet.get(i);
+		}*/
+		
+		/*
 		if (serie.forecastSet.size() < theta.length){
 			
 			double value = theta[serie.forecastSet.size()] * serie.comparingSet.get(serie.forecastSet.size());
@@ -62,7 +114,7 @@ public class CustomRegressionArma {
 			sum -= phi[index - i] * (serie.forecastSet.get(errorIndex - i) - serie.comparingSet.get(errorIndex - i));
 		}
 		
-		serie.forecastSet.add(sum);
+		serie.forecastSet.add(sum);*/
 		
 		return true;
 	}

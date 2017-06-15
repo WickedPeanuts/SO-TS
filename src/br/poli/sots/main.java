@@ -19,6 +19,7 @@ public class main {
 		
 		Series.armaSerie = new Arma(Series.emborcacao, 88.3, 1, 1, 1, 1);
 		Series.crarmaSerie = new CustomRegressionArma(Series.emborcacao, 88.3);
+		//Series.crarmaSerie = new CustomRegressionArma(Series.emborcacao, 98.9);
 		
 		PSO();
 	}
@@ -56,18 +57,21 @@ public class main {
 	public static void PSO(){
 		Swarm s = new Swarm(ETopology.Global, EFunction.NewMSE, EConstrictionFactor.ClercConstriction);
 		
-		s.InitializeSwarm();
-		s.updatePopulation(true);
+		for (int i = 0; i < Parameters.SAMPLE_COUNT; i++){
+			s.InitializeSwarm();
+			s.updatePopulation(true);
+		}
+		
 		double[] particlePos = s.particleList.get(0).positionPBest;
 		
 		Series.crarmaSerie.setParameters(particlePos);
 		Series.crarmaSerie.forecastAll();
 		
-		Series.crarmaSerie.seasonalizeSerie();
+		//Series.crarmaSerie.seasonalizeSerie();
 		
 		System.out.println(Series.armaSerie.serie.comparingSet + "\n" + Series.armaSerie.serie.forecastSet);
 		System.out.println(Series.armaSerie.serie.comparingSet.size() + "\n" + Series.armaSerie.serie.forecastSet.size());
-		//System.out.println(particlePos[0] + " " + particlePos[1] + " " + particlePos[2] + " " + particlePos[3]);
+		System.out.println(particlePos);
 	}
 
 }

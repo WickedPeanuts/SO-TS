@@ -3,11 +3,11 @@ package br.poli.sots;
 public class Parameters {
 	
 	//ARMA
-	public static final int ARMA_FEEDFOWARD = 3;
-	public static final int ARMA_BACKWARD = 2;
+	public static final int ARMA_FEEDFOWARD = 1;
+	public static final int ARMA_BACKWARD = 1;
 	
 	//PSO & FFA
-	public static final int DIMENSION_AMOUNT = ARMA_FEEDFOWARD * ARMA_BACKWARD;
+	public static final int DIMENSION_AMOUNT = ARMA_FEEDFOWARD + ARMA_BACKWARD;
 	public static final int PARTICLE_AMOUNT = 30;
 	public static final int ITERATION_AMOUNT = 10000;
 	public static final int SAMPLE_COUNT = 30;

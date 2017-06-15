@@ -15,7 +15,7 @@ public class Arma {
 		this.serie = serie;
 		this.training = training;
 		
-		serie.deseasonalize();
+		//serie.deseasonalize();
 		
 		serie.trainingSet = new LinkedList<Double>(serie.fullSerie.subList(0, (int)(serie.fullSerie.size()*training/100)));
 		serie.comparingSet = new LinkedList<Double>(serie.fullSerie.subList((int)(serie.fullSerie.size()*training/100), serie.fullSerie.size()));
