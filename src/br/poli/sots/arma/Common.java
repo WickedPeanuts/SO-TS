@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -61,10 +62,10 @@ public class Common {
 		 * (Dado - media)/(desvio padrao)
 		 */
 		
-		public static void Normalize(List<Double> serieTemporal){
-			Double media = CalculateAverage(serieTemporal);
-			Double desvioPadrao = CalculateStandardDeviation(serieTemporal);
-			serieTemporal.forEach(x -> x = ((x - media)/desvioPadrao));
+		public static void Normalize(List<Double> input){
+			Double media = CalculateAverage(input);
+			Double desvioPadrao = CalculateStandardDeviation(input);
+			input.forEach(x -> x = ((x - media)/desvioPadrao));
 		}
 						
 		public static double CalculateStandardDeviation(List<Double> serieTemporal){
@@ -77,15 +78,27 @@ public class Common {
 			return estatistica.getStandardDeviation();
 		}
 		
-		public static double CalculateAverage(List<Double> serieTemporal){
+		public static double CalculateAverage(List<Double> input){
 			DescriptiveStatistics estatistica = new DescriptiveStatistics();
 			
-			for (Double d : serieTemporal){
+			for (Double d : input){
 				estatistica.addValue(d);
 			}
 			
 			return estatistica.getMean();
 		}
 		
-	
+		public static List<Double> CalculateAverageConvergence(List<List<Double>> convergenceList){
+			List<Double> convergenceAverageList = new LinkedList<Double>();
+			List<Double> averagePerIteration = new LinkedList<Double>();
+			
+			for (int i = 0; i < convergenceList.get(0).size(); i++){
+				for (int j = 0; j < convergenceList.size(); j++){
+					averagePerIteration.add(convergenceList.get(j).get(i));
+				}
+				convergenceAverageList.add(CalculateAverage(averagePerIteration));
+			}
+			
+			return convergenceAverageList;
+		}
 }

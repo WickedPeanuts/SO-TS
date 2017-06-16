@@ -2,8 +2,8 @@ package br.poli.sots.swarmintelligence.utils;
 
 import java.util.List;
 
-import br.poli.sots.Series;
 import br.poli.sots.arma.Arma;
+import br.poli.sots.utils.serie.Series;
 
 public class MeanSquareError extends AbstractFunction {
 	

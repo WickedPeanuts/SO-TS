@@ -2,17 +2,17 @@ package br.poli.sots.swarmintelligence.utils;
 
 import java.util.List;
 
-import br.poli.sots.Series;
 import br.poli.sots.arma.Arma;
-import br.poli.sots.arma.CustomRegressionArma;
+import br.poli.sots.arma.ParametrizedArma;
+import br.poli.sots.utils.serie.Series;
 
 public class NewMSE extends AbstractFunction {
 	
 	public static final AbstractFunction instance = new NewMSE();
 	
 	private NewMSE(){
-	    BOUNDARY_MAX =  100;
-	    BOUNDARY_MIN = -100;
+	    BOUNDARY_MAX =  1;
+	    BOUNDARY_MIN = -1;
 	}
     
     public double calculateFitness(double[] position)
@@ -20,7 +20,7 @@ public class NewMSE extends AbstractFunction {
     	//RMSE logic here
     	double sum = 0;
     	
-    	CustomRegressionArma a = Series.crarmaSerie;
+    	ParametrizedArma a = Series.crarmaSerie;
     	
     	a.setParameters(position);
     	a.forecastAll();

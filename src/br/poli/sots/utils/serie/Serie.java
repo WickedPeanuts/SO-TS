@@ -24,6 +24,8 @@ public class Serie {
 	
 	public double[] standardDeviation;
 	public double[] average;
+	
+	public boolean isSeasonalized = true;
 
 	//int minimumPerMonthAverage, averagePerMonthAverage, maximumPerMonthAverage;
 
@@ -98,9 +100,11 @@ public class Serie {
 
 	}
 
-	//TODO pegar a média/desvio padrão em double
 	public void deseasonalize() {
-
+		//Only one deseasonalization is allowed
+		if (!isSeasonalized) return;
+		isSeasonalized = false;
+		
 		//Collect all standardDeviation and average from each month;
 		for (int i = 0; i < standardDeviation.length; i++){
 			List<Double> monthFlow = new LinkedList<Double>(); 
@@ -130,6 +134,8 @@ public class Serie {
 
 	//TODO ajeitar
 	public void seasonalize(){
+		if (isSeasonalized) return;
+		isSeasonalized = true;
 		
 		for(SerieYear sy : timedSerie){
 			for(int month = 0; month < 12; month++){

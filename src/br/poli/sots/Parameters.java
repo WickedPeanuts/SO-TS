@@ -3,13 +3,13 @@ package br.poli.sots;
 public class Parameters {
 	
 	//ARMA
-	public static final int ARMA_FEEDFOWARD = 1;
-	public static final int ARMA_BACKWARD = 1;
+	public static final int MAX_ARMA_FEEDFOWARD = 3;
+	public static final int MAX_ARMA_BACKWARD = 3;
 	
 	//PSO & FFA
-	public static final int DIMENSION_AMOUNT = ARMA_FEEDFOWARD + ARMA_BACKWARD;
+	public static int DIMENSION_AMOUNT = MAX_ARMA_FEEDFOWARD + MAX_ARMA_BACKWARD;
 	public static final int PARTICLE_AMOUNT = 30;
-	public static final int ITERATION_AMOUNT = 10000;
+	public static final int ITERATION_AMOUNT = 100;
 	public static final int SAMPLE_COUNT = 30;
 	
 	//FSS
@@ -22,5 +22,9 @@ public class Parameters {
 	public static final double STEP_VOL_INIT = 0.1;
 	public static final double STEP_VOL_FINAL = 0.001;
 	public static boolean DEBUG = false;
+	
+	public static void UpdateParameters(){
+		DIMENSION_AMOUNT = MAX_ARMA_FEEDFOWARD + MAX_ARMA_BACKWARD;
+	}
 }
 

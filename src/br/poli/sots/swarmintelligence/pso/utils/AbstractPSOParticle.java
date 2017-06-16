@@ -18,7 +18,7 @@ public abstract class AbstractPSOParticle
     public static double globalBest;
     public static double[] positionGBest;
     
-    protected static EFunction functionType;
+    public static EFunction functionType;
     protected static EConstrictionFactor constrictionType;
 
     protected static AbstractFunction function;

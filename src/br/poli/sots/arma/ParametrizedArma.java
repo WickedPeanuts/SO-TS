@@ -7,23 +7,37 @@ import java.util.List;
 import br.poli.sots.Parameters;
 import br.poli.sots.utils.serie.Serie;
 
-public class CustomRegressionArma {
+public class ParametrizedArma {
 	public Serie serie;
 	double[] theta, phi;
-	double training;
+	int training;
+	int reintegration;
 	
 	@SuppressWarnings("unchecked")
-	public CustomRegressionArma (Serie serie, double training){
+	public ParametrizedArma (Serie serie, int training){
 		this.serie = serie;
 		this.training = training;
 		
-		//serie.deseasonalize();
+		initialize(Parameters.MAX_ARMA_FEEDFOWARD, Parameters.MAX_ARMA_BACKWARD);
+	}
+	
+	public ParametrizedArma (Serie serie, int training, int feedfoward, int backward){
+		this.serie = serie;
+		this.training = training + Math.max(feedfoward, backward);
 		
-		theta = new double[Parameters.ARMA_FEEDFOWARD];
-		phi = new double[Parameters.ARMA_BACKWARD];
+		initialize(feedfoward, backward);
+	}
+	
+	private void initialize(int feedfoward, int backward){
+		reintegration = Math.max(feedfoward, backward);
 		
-		serie.trainingSet = new LinkedList<Double>(serie.fullSerie.subList(0, (int)(serie.fullSerie.size()*training/100)));
-		serie.comparingSet = new LinkedList<Double>(serie.fullSerie.subList((int)(serie.fullSerie.size()*training/100), serie.fullSerie.size()));
+		serie.deseasonalize();
+		
+		theta = new double[feedfoward];
+		phi = new double[backward];
+		
+		serie.trainingSet = new LinkedList<Double>(serie.fullSerie.subList(0, serie.fullSerie.size() - training));
+		serie.comparingSet = new LinkedList<Double>(serie.fullSerie.subList(serie.trainingSet.size(), serie.fullSerie.size()));
 	}
 	
 	public void setParameters(double[] param){
@@ -89,44 +103,27 @@ public class CustomRegressionArma {
 		}
 		
 		serie.forecastSet.add(sum);
-		//System.out.println("STOP HAMMER TIME");
-		
-		/*for (int i = phiIndex; i < Math.min(serie.forecastSet.size(), theta.length) + serie.forecastSet.size(); i++){
-			sum -= phiIndex * serie.forecastSet.get(i);
-		}*/
-		
-		/*
-		if (serie.forecastSet.size() < theta.length){
-			
-			double value = theta[serie.forecastSet.size()] * serie.comparingSet.get(serie.forecastSet.size());
-			serie.forecastSet.add(value);
-			
-			return true;
-		}
-		
-		double sum = 0;
-		
-		int index = theta.length - 1;
-		int errorIndex = serie.forecastSet.size() - 1;
-
-		for (int i = 0; i < index; i++){
-			sum += theta[index - i] * serie.comparingSet.get(index - i);
-			sum -= phi[index - i] * (serie.forecastSet.get(errorIndex - i) - serie.comparingSet.get(errorIndex - i));
-		}
-		
-		serie.forecastSet.add(sum);*/
 		
 		return true;
 	}
 	
-	//Prevê toda a série
+	//forecast the entire serie
 	public void forecastAll(){
 		while(forecastNext());
+		reintegrateSerie();
 	}
 	
 	public void seasonalizeSerie(){
 		serie.seasonalize();
-		serie.trainingSet = new LinkedList<Double>(serie.fullSerie.subList(0, (int)(serie.fullSerie.size()*training/100)));
-		serie.comparingSet = new LinkedList<Double>(serie.fullSerie.subList((int)(serie.fullSerie.size()*training/100), serie.fullSerie.size()));
+		serie.trainingSet = new LinkedList<Double>(serie.fullSerie.subList(0, serie.fullSerie.size() - (training - reintegration)));
+		serie.comparingSet = new LinkedList<Double>(serie.fullSerie.subList(serie.trainingSet.size(), serie.fullSerie.size()));
+		serie.forecastSet = new LinkedList<Double>(serie.fullSerie.subList(reintegration, training));
+	}
+	
+	//reintegrate
+	private void reintegrateSerie(){
+		for (int i = 0; i < reintegration; i++){
+			serie.forecastSet.set(i, serie.comparingSet.get(i));
+		}
 	}
 }

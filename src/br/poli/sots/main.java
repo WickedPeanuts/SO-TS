@@ -1,15 +1,24 @@
 package br.poli.sots;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import br.poli.sots.arma.Arma;
-import br.poli.sots.arma.CustomRegressionArma;
+import br.poli.sots.arma.Common;
+import br.poli.sots.arma.ParametrizedArma;
 import br.poli.sots.swarmintelligence.ffa.utils.FireflyParticle;
 import br.poli.sots.swarmintelligence.fss.FishSchoolSearch;
+import br.poli.sots.swarmintelligence.pso.utils.AbstractPSOParticle;
 import br.poli.sots.swarmintelligence.pso.utils.EConstrictionFactor;
 import br.poli.sots.swarmintelligence.pso.utils.ETopology;
 import br.poli.sots.swarmintelligence.pso.utils.Swarm;
 import br.poli.sots.swarmintelligence.utils.AbstractFunction;
 import br.poli.sots.swarmintelligence.utils.EFunction;
 import br.poli.sots.swarmintelligence.utils.MeanSquareError;
+import br.poli.sots.swarmintelligence.utils.NewMSE;
+import br.poli.sots.utils.logging.StaticLogger;
+import br.poli.sots.utils.serie.EOptimizer;
+import br.poli.sots.utils.serie.Series;
 
 public class main {
 
@@ -18,7 +27,7 @@ public class main {
 		
 		
 		Series.armaSerie = new Arma(Series.emborcacao, 88.3, 1, 1, 1, 1);
-		Series.crarmaSerie = new CustomRegressionArma(Series.emborcacao, 88.3);
+		//Series.crarmaSerie = new ParametrizedArma(Series.emborcacao, 123);
 		//Series.crarmaSerie = new CustomRegressionArma(Series.emborcacao, 98.9);
 		
 		PSO();
@@ -55,23 +64,66 @@ public class main {
 	}
 	
 	public static void PSO(){
-		Swarm s = new Swarm(ETopology.Global, EFunction.NewMSE, EConstrictionFactor.ClercConstriction);
-		
-		for (int i = 0; i < Parameters.SAMPLE_COUNT; i++){
-			s.InitializeSwarm();
-			s.updatePopulation(true);
+		for (int bkwrd = 0; bkwrd <= 3; bkwrd++){
+			for (int ffrd = 1; ffrd <= 3; ffrd++){
+				
+				//Adicionar label do logger
+				StaticLogger.add("Feedfoward: " + ffrd + ", Backward: " + bkwrd, EOptimizer.PSO);
+				
+				//Adição da média da lista de convergências
+				Series.crarmaSerie = new ParametrizedArma(Series.emborcacao, 120, ffrd, bkwrd);
+				
+				Swarm s = new Swarm(ETopology.Global, EFunction.NewMSE, EConstrictionFactor.ClercConstriction);
+				
+				List<List<Double>> convergencePerIteration = new LinkedList<List<Double>>();
+				List<Double> bestErrorList = new LinkedList<Double>();
+				
+				for (int k = 0; k < Parameters.SAMPLE_COUNT; k++){
+					s.InitializeSwarm();
+					s.updatePopulation(true);
+					convergencePerIteration.add(s.globalBestLog);
+					bestErrorList.add(s.globalBestLog.get(s.globalBestLog.size() - 1));
+				}
+			    StaticLogger.add(Common.CalculateAverageConvergence(convergencePerIteration), EOptimizer.PSO, "Convergence " + AbstractPSOParticle.functionType + ": {", "}");
+			    
+			    //Erros totais
+			    StaticLogger.add(bestErrorList, EOptimizer.PSO, "Error " + AbstractPSOParticle.functionType + " per iteration: {", "}");
+			    
+			    //MSE da best			
+			    Series.crarmaSerie = new ParametrizedArma(Series.emborcacao, 120, ffrd, bkwrd);
+				Series.crarmaSerie.setParameters(AbstractPSOParticle.positionGBest);
+				Series.crarmaSerie.forecastAll();
+				StaticLogger.add(AbstractPSOParticle.positionGBest, EOptimizer.PSO, "Parameters (" + ffrd + "Feedfoward, " + ffrd + " Backward) : {", "}");
+				
+				//As séries sazonalizadas
+				StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.PSO, "Comparing set: {", "}");
+				StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.PSO, "Forecastset set: {", "}");
+				
+				//As séries desazonalizadas
+				Series.crarmaSerie.seasonalizeSerie();
+				StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.PSO, "Comparing set: {", "}");
+				StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.PSO, "Forecastset set: {", "}");
+				
+				//Erro quadrático médio (best)
+				Double mseError = NewMSE.instance.calculateFitness(AbstractPSOParticle.positionGBest);
+				StaticLogger.add(mseError, EOptimizer.PSO, "Best Mean square error: ", "");
+				
+				//Erro absoluto médio (best)
+				Double maeError = NewMSE.instance.calculateFitness(AbstractPSOParticle.positionGBest);
+				StaticLogger.add(maeError, EOptimizer.PSO, "Best Mean absolute error: ", "");
+				
+				System.out.println("\n\n");
+				for (String ss : StaticLogger.psoLog){
+					System.out.println(ss);
+				}
+				StaticLogger.psoLog.clear();
+				
+				//System.out.println(Series.armaSerie.serie.comparingSet + "\n" + Series.armaSerie.serie.forecastSet);
+				//System.out.println(Series.armaSerie.serie.comparingSet.size() + "\n" + Series.armaSerie.serie.forecastSet.size());
+				//System.out.println(particlePos);
+				
+				
+			}
 		}
-		
-		double[] particlePos = s.particleList.get(0).positionPBest;
-		
-		Series.crarmaSerie.setParameters(particlePos);
-		Series.crarmaSerie.forecastAll();
-		
-		//Series.crarmaSerie.seasonalizeSerie();
-		
-		System.out.println(Series.armaSerie.serie.comparingSet + "\n" + Series.armaSerie.serie.forecastSet);
-		System.out.println(Series.armaSerie.serie.comparingSet.size() + "\n" + Series.armaSerie.serie.forecastSet.size());
-		System.out.println(particlePos);
 	}
-
 }
