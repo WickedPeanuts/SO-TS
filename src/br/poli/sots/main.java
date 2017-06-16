@@ -87,7 +87,7 @@ public class main {
 			    StaticLogger.add(Common.CalculateAverageConvergence(convergencePerIteration), EOptimizer.PSO, "Convergence " + AbstractPSOParticle.functionType + ": {", "}");
 			    
 			    //Erros totais
-			    StaticLogger.add(bestErrorList, EOptimizer.PSO, "Error " + AbstractPSOParticle.functionType + " per iteration: {", "}");
+			    StaticLogger.add(bestErrorList, EOptimizer.PSO, AbstractPSOParticle.functionType + " per iteration: {", "}");
 			    
 			    //MSE da best			
 			    Series.crarmaSerie = new ParametrizedArma(Series.emborcacao, 120, ffrd, bkwrd);
@@ -95,22 +95,22 @@ public class main {
 				Series.crarmaSerie.forecastAll();
 				StaticLogger.add(AbstractPSOParticle.positionGBest, EOptimizer.PSO, "Parameters (" + ffrd + "Feedfoward, " + ffrd + " Backward) : {", "}");
 				
-				//As séries sazonalizadas
-				StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.PSO, "Comparing set: {", "}");
-				StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.PSO, "Forecastset set: {", "}");
+				//As séries desazonalizada
+				StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.PSO, "Comparing (Deseasonalized) set: {", "}");
+				StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.PSO, "Forecastset (Deseasonalized) set: {", "}");
 				
 				//As séries desazonalizadas
 				Series.crarmaSerie.seasonalizeSerie();
-				StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.PSO, "Comparing set: {", "}");
-				StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.PSO, "Forecastset set: {", "}");
+				StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.PSO, "Comparing (Seasonalized) set: {", "}");
+				StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.PSO, "Forecastset (Seasonalized) set: {", "}");
 				
 				//Erro quadrático médio (best)
 				Double mseError = NewMSE.instance.calculateFitness(AbstractPSOParticle.positionGBest);
-				StaticLogger.add(mseError, EOptimizer.PSO, "Best Mean square error: ", "");
+				StaticLogger.add(mseError, EOptimizer.PSO, "Best Mean (Seasonalized) square error: ", "");
 				
 				//Erro absoluto médio (best)
 				Double maeError = NewMSE.instance.calculateFitness(AbstractPSOParticle.positionGBest);
-				StaticLogger.add(maeError, EOptimizer.PSO, "Best Mean absolute error: ", "");
+				StaticLogger.add(maeError, EOptimizer.PSO, "Best Mean (Seasonalized) absolute error: ", "");
 				
 				System.out.println("\n\n");
 				for (String ss : StaticLogger.psoLog){
