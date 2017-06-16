@@ -21,6 +21,12 @@ public class Parameters {
 	public static final double STEP_IND_FINAL = 0.00001;
 	public static final double STEP_VOL_INIT = 0.1;
 	public static final double STEP_VOL_FINAL = 0.001;
+	
+	//ABC
+	public static final int EMPLOYED_BEES = 30;
+	public static final int SCOUT_BEES = 30;
+	public static final int ALPHA = 1;
+	
 	public static boolean DEBUG = false;
 	
 	public static void UpdateParameters(){
