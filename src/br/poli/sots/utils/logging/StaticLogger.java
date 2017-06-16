@@ -1,5 +1,6 @@
 package br.poli.sots.utils.logging;
 
+import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -7,7 +8,7 @@ import java.util.stream.Stream;
 import br.poli.sots.utils.serie.EOptimizer;
 
 public class StaticLogger {
-	public static List<String> psoLog = new LinkedList<String>();
+	static List<String> psoLog = new LinkedList<String>();
 	static List<String> fssLog = new LinkedList<String>();
 	static List<String> abcLog = new LinkedList<String>();
 	static List<String> ffaLog = new LinkedList<String>();
@@ -41,7 +42,7 @@ public class StaticLogger {
 		List<String> log = selectLog(optimizer);
 		
 		StringBuilder text = new StringBuilder(prepend);
-		text.append(prepend).append(number).append(append);
+		text.append(number).append(append);
 		
 		log.add(text.toString());
 	}
@@ -61,6 +62,24 @@ public class StaticLogger {
 				return ffaLog;
 			default:
 				return fssLog;
+		}
+	}
+	
+	public static void saveToFile(){
+		try{
+			PrintWriter out = new PrintWriter("results.txt");
+			out.print("PSO\n\n");
+			psoLog.forEach(x -> out.print(x + "\n"));
+			out.print("\n\nABC\n\n");
+			abcLog.forEach(x -> out.print(x + "\n"));
+			out.print("\n\nFFA\n\n");
+			ffaLog.forEach(x -> out.print(x + "\n"));
+			out.print("\n\nFSS\n\n");
+			fssLog.forEach(x -> out.print(x + "\n"));
+			System.out.println("File saved sucessfully!");
+			out.close();
+		} catch (Exception e){
+			System.out.println("Could not save on file, error: " + e.getMessage());
 		}
 	}
 }

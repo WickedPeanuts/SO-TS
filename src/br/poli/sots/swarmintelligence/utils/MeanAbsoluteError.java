@@ -3,7 +3,7 @@ package br.poli.sots.swarmintelligence.utils;
 import java.util.List;
 
 import br.poli.sots.arma.Arma;
-import br.poli.sots.arma.ParametrizedArma;
+import br.poli.sots.arma.Arma;
 import br.poli.sots.utils.serie.Series;
 
 public class MeanAbsoluteError extends AbstractFunction {
@@ -21,7 +21,7 @@ public class MeanAbsoluteError extends AbstractFunction {
     	//RMSE logic here
     	double sum = 0;
     	
-    	ParametrizedArma a = Series.crarmaSerie;
+    	Arma a = Series.armaSerie;
     	
     	a.setParameters(position);
     	a.forecastAll();
@@ -32,7 +32,7 @@ public class MeanAbsoluteError extends AbstractFunction {
     	
         for (int i = 0; i < forecastSet.size(); i++)
         {
-        	sum += Math.pow((forecastSet.get(i) - comparingSet.get(i)), 2);
+        	sum += (forecastSet.get(i) - comparingSet.get(i));
         }
         
         sum = sum/forecastSet.size();

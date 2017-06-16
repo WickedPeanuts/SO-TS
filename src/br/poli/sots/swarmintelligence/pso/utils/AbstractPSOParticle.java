@@ -14,7 +14,7 @@ public abstract class AbstractPSOParticle
     public double[] positionPBest;
     public double[] velocity;
     public double personalBest;
-
+    
     public static double globalBest;
     public static double[] positionGBest;
     
