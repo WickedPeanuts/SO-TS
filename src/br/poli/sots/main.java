@@ -70,7 +70,7 @@ public class main {
 				//Adicionar label do logger
 				StaticLogger.add("Feedfoward: " + ffrd + ", Backward: " + bkwrd, EOptimizer.PSO);
 				
-				//Adição da média da lista de convergências
+				//Adiï¿½ï¿½o da mï¿½dia da lista de convergï¿½ncias
 				Series.crarmaSerie = new ParametrizedArma(Series.emborcacao, 120, ffrd, bkwrd);
 				
 				Swarm s = new Swarm(ETopology.Global, EFunction.NewMSE, EConstrictionFactor.ClercConstriction);
@@ -95,20 +95,20 @@ public class main {
 				Series.crarmaSerie.forecastAll();
 				StaticLogger.add(AbstractPSOParticle.positionGBest, EOptimizer.PSO, "Parameters (" + ffrd + "Feedfoward, " + ffrd + " Backward) : {", "}");
 				
-				//As séries desazonalizada
+				//As sï¿½ries desazonalizada
 				StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.PSO, "Comparing (Deseasonalized) set: {", "}");
 				StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.PSO, "Forecastset (Deseasonalized) set: {", "}");
 				
-				//As séries desazonalizadas
+				//As sï¿½ries desazonalizadas
 				Series.crarmaSerie.seasonalizeSerie();
 				StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.PSO, "Comparing (Seasonalized) set: {", "}");
 				StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.PSO, "Forecastset (Seasonalized) set: {", "}");
 				
-				//Erro quadrático médio (best)
+				//Erro quadrï¿½tico mï¿½dio (best)
 				Double mseError = NewMSE.instance.calculateFitness(AbstractPSOParticle.positionGBest);
 				StaticLogger.add(mseError, EOptimizer.PSO, "Best Mean (Seasonalized) square error: ", "");
 				
-				//Erro absoluto médio (best)
+				//Erro absoluto mï¿½dio (best)
 				Double maeError = NewMSE.instance.calculateFitness(AbstractPSOParticle.positionGBest);
 				StaticLogger.add(maeError, EOptimizer.PSO, "Best Mean (Seasonalized) absolute error: ", "");
 				

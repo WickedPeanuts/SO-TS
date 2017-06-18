@@ -24,8 +24,9 @@ public class Parameters {
 	
 	//ABC
 	public static final int EMPLOYED_BEES = 30;
-	public static final int SCOUT_BEES = 30;
+	public static final int ONLOOKER_BEES = 30;
 	public static final int ALPHA = 1;
+	public static final int ATTEMPTS = 1;
 	
 	public static boolean DEBUG = false;
 	
