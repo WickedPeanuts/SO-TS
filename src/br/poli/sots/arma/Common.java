@@ -92,8 +92,8 @@ public class Common {
 			List<Double> convergenceAverageList = new LinkedList<Double>();
 			List<Double> averagePerIteration = new LinkedList<Double>();
 			
-			for (int i = 0; i < convergenceList.get(0).size(); i++){
-				for (int j = 0; j < convergenceList.size(); j++){
+			for (int j = 0; j < convergenceList.size(); j++){
+				for (int i = 0; i < convergenceList.get(j).size(); i++){
 					averagePerIteration.add(convergenceList.get(j).get(i));
 				}
 				convergenceAverageList.add(CalculateAverage(averagePerIteration));

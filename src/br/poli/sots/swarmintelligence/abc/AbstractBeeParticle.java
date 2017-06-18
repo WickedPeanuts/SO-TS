@@ -3,6 +3,7 @@ package br.poli.sots.swarmintelligence.abc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import br.poli.sots.Parameters;
 import br.poli.sots.swarmintelligence.utils.AbstractFunction;
@@ -13,6 +14,8 @@ public abstract class AbstractBeeParticle
     public double[] position;
     public double[] positionPBest;
     public double personalBest;
+    public double fitness;
+    private int atempts;
 
     public static double globalBest;
     public static double[] positionGBest;
@@ -39,6 +42,7 @@ public abstract class AbstractBeeParticle
             AbstractBeeParticle.functionType = functionType;
             function = AbstractFunction.instanceFunction(functionType);
         }
+        this.setAtempts(Parameters.ATTEMPTS);
     }
 
     public void initialize()
@@ -74,11 +78,10 @@ public abstract class AbstractBeeParticle
 
     }
 
-    public abstract void updateSpeed();
-
     public void updateFitness()
     {
         double newPBest = function.calculateFitness(position);
+        this.fitness = newPBest;
         if (personalBest > newPBest)
         {
             //Update PBest and current Position
@@ -115,4 +118,27 @@ public abstract class AbstractBeeParticle
 
         return swarm;
     }
+    
+    public AbstractBeeParticle mutate(List<AbstractBeeParticle> employedBeesList, int index){
+		AbstractBeeParticle bee = new Bee(functionType);
+		for (int i = 0; i < this.position.length; i ++){
+			int rand = ThreadLocalRandom.current().nextInt(employedBeesList.size()-1);
+			if (rand >= index){
+				rand++;
+			}
+			double phi = ThreadLocalRandom.current().nextDouble(-Parameters.ALPHA, Parameters.ALPHA);
+			double diff = position[i] - employedBeesList.get(rand).position[i];
+			bee.position[i] = position[i] + phi * diff;
+		}
+		bee.updateFitness();
+		return bee;
+	}
+
+	public int getAtempts() {
+		return atempts;
+	}
+
+	public void setAtempts(int atempts) {
+		this.atempts = atempts;
+	}
 }
