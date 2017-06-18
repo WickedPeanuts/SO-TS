@@ -1,6 +1,6 @@
 package br.poli.sots.utils.serie;
 import br.poli.sots.arma.Arma;
-import br.poli.sots.arma.ParametrizedArma;
+import br.poli.sots.arma.Arma;
 
 public class Series {
 	public static Serie emborcacao = new Serie("Emborcacao");
@@ -8,6 +8,5 @@ public class Series {
 	//public static Serie passoReal = new Serie("Passo Real"); 
 	public static Serie sobradinho = new Serie("Sobradinho"); 
 	
-	public static ParametrizedArma crarmaSerie;
 	public static Arma armaSerie;
 }

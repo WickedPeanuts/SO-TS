@@ -5,7 +5,6 @@ import java.util.List;
 
 import br.poli.sots.arma.Arma;
 import br.poli.sots.arma.Common;
-import br.poli.sots.arma.ParametrizedArma;
 import br.poli.sots.swarmintelligence.ffa.utils.FireflyParticle;
 import br.poli.sots.swarmintelligence.fss.FishSchoolSearch;
 import br.poli.sots.swarmintelligence.pso.utils.AbstractPSOParticle;
@@ -14,8 +13,9 @@ import br.poli.sots.swarmintelligence.pso.utils.ETopology;
 import br.poli.sots.swarmintelligence.pso.utils.Swarm;
 import br.poli.sots.swarmintelligence.utils.AbstractFunction;
 import br.poli.sots.swarmintelligence.utils.EFunction;
+import br.poli.sots.swarmintelligence.utils.MeanAbsoluteError;
 import br.poli.sots.swarmintelligence.utils.MeanSquareError;
-import br.poli.sots.swarmintelligence.utils.NewMSE;
+import br.poli.sots.swarmintelligence.utils.RootMeanSquareError;
 import br.poli.sots.utils.logging.StaticLogger;
 import br.poli.sots.utils.serie.EOptimizer;
 import br.poli.sots.utils.serie.Series;
@@ -25,12 +25,8 @@ public class main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		
-		Series.armaSerie = new Arma(Series.emborcacao, 88.3, 1, 1, 1, 1);
-		//Series.crarmaSerie = new ParametrizedArma(Series.emborcacao, 123);
-		//Series.crarmaSerie = new CustomRegressionArma(Series.emborcacao, 98.9);
-		
-		PSO();
+		RunAllPSOSimulations();
+		StaticLogger.saveToFile();
 	}
 	
 	public static void FSS(){
@@ -39,7 +35,7 @@ public class main {
 		fss.Busca(10000, 1);
 		double[] particlePos = fss.getBestPosition();
 
-		Series.armaSerie.setParameters(particlePos[0], particlePos[1], particlePos[2], particlePos[3]);
+		Series.armaSerie.setParameters(particlePos);
 		Series.armaSerie.forecastAll();
 		
 		System.out.println(Series.armaSerie.serie.comparingSet + "\n" + Series.armaSerie.serie.forecastSet);
@@ -55,7 +51,7 @@ public class main {
 		double[] particlePos = FireflyParticle.globalBestPosition;
 		
 		
-		Series.armaSerie.setParameters(particlePos[0], particlePos[1], particlePos[2], particlePos[3]);
+		Series.armaSerie.setParameters(particlePos);
 		Series.armaSerie.forecastAll();
 		
 		System.out.println(Series.armaSerie.serie.comparingSet + "\n" + Series.armaSerie.serie.forecastSet);
@@ -63,17 +59,43 @@ public class main {
 		System.out.println(particlePos[0] + " " + particlePos[1] + " " + particlePos[2] + " " + particlePos[3]);
 	}
 	
-	public static void PSO(){
+	public static void RunAllPSOSimulations(){
+		int i = 1;
+		PSO(ETopology.Global, EFunction.MeanSquareError, EConstrictionFactor.FixedInertia);
+		System.out.println(i++ + "/9 PSO simulations complete!");
+		PSO(ETopology.Focal, EFunction.MeanSquareError, EConstrictionFactor.FixedInertia);
+		System.out.println(i++ + "/9 PSO simulations complete!");
+		PSO(ETopology.Ring, EFunction.MeanSquareError, EConstrictionFactor.FixedInertia);
+		System.out.println(i++ + "/9 PSO simulations complete!");
+		PSO(ETopology.Global, EFunction.MeanSquareError, EConstrictionFactor.FloatingInertia);
+		System.out.println(i++ + "/9 PSO simulations complete!");
+		PSO(ETopology.Focal, EFunction.MeanSquareError, EConstrictionFactor.FloatingInertia);
+		System.out.println(i++ + "/9 PSO simulations complete!");
+		PSO(ETopology.Ring, EFunction.MeanSquareError, EConstrictionFactor.FloatingInertia);
+		System.out.println(i++ + "/9 PSO simulations complete!");
+		PSO(ETopology.Global, EFunction.MeanSquareError, EConstrictionFactor.ClercConstriction);
+		System.out.println(i++ + "/9 PSO simulations complete!");
+		PSO(ETopology.Focal, EFunction.MeanSquareError, EConstrictionFactor.ClercConstriction);
+		System.out.println(i++ + "/9 PSO simulations complete!");
+		PSO(ETopology.Ring, EFunction.MeanSquareError, EConstrictionFactor.ClercConstriction);
+		System.out.println(i++ + "/9 PSO simulations complete!");
+		
+	}
+	
+	public static void PSO(ETopology topology, EFunction function, EConstrictionFactor constriction){
+		StaticLogger.add(topology + ", " + function + ", " + constriction + "\n", EOptimizer.PSO);
+		
 		for (int bkwrd = 0; bkwrd <= 3; bkwrd++){
 			for (int ffrd = 1; ffrd <= 3; ffrd++){
 				
 				//Adicionar label do logger
 				StaticLogger.add("Feedfoward: " + ffrd + ", Backward: " + bkwrd, EOptimizer.PSO);
+				System.out.println("Feedfoward: " + ffrd + ", Backward: " + bkwrd);
 				
-				//Adi��o da m�dia da lista de converg�ncias
-				Series.crarmaSerie = new ParametrizedArma(Series.emborcacao, 120, ffrd, bkwrd);
+				//Adição da média da lista de convergências
+				Series.armaSerie = new Arma(Series.emborcacao, 120, ffrd, bkwrd);
 				
-				Swarm s = new Swarm(ETopology.Global, EFunction.NewMSE, EConstrictionFactor.ClercConstriction);
+				Swarm s = new Swarm(topology, function, constriction);
 				
 				List<List<Double>> convergencePerIteration = new LinkedList<List<Double>>();
 				List<Double> bestErrorList = new LinkedList<Double>();
@@ -90,40 +112,48 @@ public class main {
 			    StaticLogger.add(bestErrorList, EOptimizer.PSO, AbstractPSOParticle.functionType + " per iteration: {", "}");
 			    
 			    //MSE da best			
-			    Series.crarmaSerie = new ParametrizedArma(Series.emborcacao, 120, ffrd, bkwrd);
-				Series.crarmaSerie.setParameters(AbstractPSOParticle.positionGBest);
-				Series.crarmaSerie.forecastAll();
+			    Series.armaSerie = new Arma(Series.emborcacao, 120, ffrd, bkwrd);
+				Series.armaSerie.setParameters(AbstractPSOParticle.positionGBest);
+				Series.armaSerie.forecastAll();
 				StaticLogger.add(AbstractPSOParticle.positionGBest, EOptimizer.PSO, "Parameters (" + ffrd + "Feedfoward, " + ffrd + " Backward) : {", "}");
 				
-				//As s�ries desazonalizada
+				//As séries desazonalizada
 				StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.PSO, "Comparing (Deseasonalized) set: {", "}");
 				StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.PSO, "Forecastset (Deseasonalized) set: {", "}");
 				
-				//As s�ries desazonalizadas
-				Series.crarmaSerie.seasonalizeSerie();
+				//Erro quadrático médio (best) desazonalizado
+				Double mseError = MeanSquareError.instance.calculateFitness(AbstractPSOParticle.positionGBest);
+				StaticLogger.add(mseError, EOptimizer.PSO, "Best Mean (Deseasonalized) square error: ", "");
+				
+				//Erro absoluto médio (best) desazonalizado
+				Double maeError = MeanAbsoluteError.instance.calculateFitness(AbstractPSOParticle.positionGBest);
+				StaticLogger.add(maeError, EOptimizer.PSO, "Best Mean (Deseasonalized) absolute error: ", "");
+				
+				//Erro raiz quadrático (best) desazonalizado
+				Double rmseError = RootMeanSquareError.instance.calculateFitness(AbstractPSOParticle.positionGBest);
+				StaticLogger.add(rmseError, EOptimizer.PSO, "Best Mean (Deseasonalized) absolute error: ", "");
+				
+				//As séries desazonalizadas
+				Series.armaSerie.seasonalizeSerie();
 				StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.PSO, "Comparing (Seasonalized) set: {", "}");
 				StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.PSO, "Forecastset (Seasonalized) set: {", "}");
 				
-				//Erro quadr�tico m�dio (best)
-				Double mseError = NewMSE.instance.calculateFitness(AbstractPSOParticle.positionGBest);
+				//Erro quadrático médio (best) sazonalizado
+				mseError = MeanSquareError.instance.calculateFitness(AbstractPSOParticle.positionGBest);
 				StaticLogger.add(mseError, EOptimizer.PSO, "Best Mean (Seasonalized) square error: ", "");
 				
-				//Erro absoluto m�dio (best)
-				Double maeError = NewMSE.instance.calculateFitness(AbstractPSOParticle.positionGBest);
+				//Erro absoluto médio (best) sazonalizado
+				maeError = MeanAbsoluteError.instance.calculateFitness(AbstractPSOParticle.positionGBest);
 				StaticLogger.add(maeError, EOptimizer.PSO, "Best Mean (Seasonalized) absolute error: ", "");
 				
-				System.out.println("\n\n");
-				for (String ss : StaticLogger.psoLog){
-					System.out.println(ss);
-				}
-				StaticLogger.psoLog.clear();
+				//Erro raiz quadrático (best) desazonalizado
+				rmseError = RootMeanSquareError.instance.calculateFitness(AbstractPSOParticle.positionGBest);
+				StaticLogger.add(rmseError, EOptimizer.PSO, "Best Mean (Deseasonalized) absolute error: ", "");
 				
-				//System.out.println(Series.armaSerie.serie.comparingSet + "\n" + Series.armaSerie.serie.forecastSet);
-				//System.out.println(Series.armaSerie.serie.comparingSet.size() + "\n" + Series.armaSerie.serie.forecastSet.size());
-				//System.out.println(particlePos);
-				
-				
+				StaticLogger.add("\n", EOptimizer.PSO);
 			}
 		}
+		
+		StaticLogger.add("\n\n\n", EOptimizer.PSO);
 	}
 }

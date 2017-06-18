@@ -9,7 +9,7 @@ public class Parameters {
 	//PSO & FFA
 	public static int DIMENSION_AMOUNT = MAX_ARMA_FEEDFOWARD + MAX_ARMA_BACKWARD;
 	public static final int PARTICLE_AMOUNT = 30;
-	public static final int ITERATION_AMOUNT = 100;
+	public static final int ITERATION_AMOUNT = 10000;
 	public static final int SAMPLE_COUNT = 30;
 	
 	//FSS

@@ -10,8 +10,8 @@ public class RootMeanSquareError extends AbstractFunction {
 	public static final AbstractFunction instance = new RootMeanSquareError();
 	
 	private RootMeanSquareError(){
-	    BOUNDARY_MAX =  100;
-	    BOUNDARY_MIN = -100;
+	    BOUNDARY_MAX =  1;
+	    BOUNDARY_MIN = -1;
 	}
     
     public double calculateFitness(double[] position)
@@ -21,7 +21,7 @@ public class RootMeanSquareError extends AbstractFunction {
     	
     	Arma a = Series.armaSerie;
     	
-    	a.setParameters(position[0], position[1], position[2], position[3]);
+    	a.setParameters(position);
     	a.forecastAll();
     	
     	List<Double> forecastSet, comparingSet;
