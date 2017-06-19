@@ -27,7 +27,9 @@ public class main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//RunAllPSOSimulations(Series.emborcacao);
-		FFA();
+		FFA(EFunction.MeanSquareError, Series.emborcacao);
+		FFA(EFunction.MeanSquareError, Series.furnas);
+		FFA(EFunction.MeanSquareError, Series.sobradinho);
 		
 		StaticLogger.saveToFile();
 	}
