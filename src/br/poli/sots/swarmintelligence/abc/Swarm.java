@@ -53,7 +53,7 @@ public class Swarm
     	AbstractBeeParticle mutate = particle.mutate(employedBeesList, employedBeesList.indexOf(particle));
     	if (mutate.fitness < particle.fitness){
     		particle = mutate;
-    		globalBestLog.add(mutate.fitness);
+    		//globalBestLog.add(mutate.fitness);
     		//UPDATES GBEST
     	}else{
     		particle.setAtempts(particle.getAtempts()-1);

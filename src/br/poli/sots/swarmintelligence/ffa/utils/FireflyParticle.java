@@ -27,7 +27,7 @@ public class FireflyParticle
     public static double globalBestFitness;
     public static double[] globalBestPosition;
 
-    protected static EFunction functionType;
+    public static EFunction functionType;
     protected static AbstractFunction function;
 
     static Random random = new Random();

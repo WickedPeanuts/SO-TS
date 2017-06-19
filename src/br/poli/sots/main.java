@@ -26,7 +26,9 @@ public class main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		ABC(EFunction.MeanSquareError, Series.emborcacao);
+		//RunAllPSOSimulations(Series.emborcacao);
+		FFA();
+		
 		StaticLogger.saveToFile();
 	}
 	
@@ -36,22 +38,6 @@ public class main {
 		fss.Busca(10000, 1);
 		double[] particlePos = fss.getBestPosition();
 
-		Series.armaSerie.setParameters(particlePos);
-		Series.armaSerie.forecastAll();
-		
-		System.out.println(Series.armaSerie.serie.comparingSet + "\n" + Series.armaSerie.serie.forecastSet);
-		System.out.println(Series.armaSerie.serie.comparingSet.size() + "\n" + Series.armaSerie.serie.forecastSet.size());
-		System.out.println(particlePos[0] + " " + particlePos[1] + " " + particlePos[2] + " " + particlePos[3]);
-	}
-	
-	public static void FFA(){
-		br.poli.sots.swarmintelligence.ffa.utils.Swarm s = new br.poli.sots.swarmintelligence.ffa.utils.Swarm(EFunction.MeanSquareError);
-		
-		s.initializeSwarm();
-		s.updatePopulation(true);
-		double[] particlePos = FireflyParticle.globalBestPosition;
-		
-		
 		Series.armaSerie.setParameters(particlePos);
 		Series.armaSerie.forecastAll();
 		
@@ -83,7 +69,7 @@ public class main {
 		
 	}
 	
-	public static boolean firstTry = false;
+	public static boolean firstTry = true;
 	
 	public static void PSO(ETopology topology, EFunction function, EConstrictionFactor constriction, Serie serie){
 		StaticLogger.add(topology + ", " + function + ", " + constriction + "\n", EOptimizer.PSO);
@@ -162,12 +148,88 @@ public class main {
 		StaticLogger.add("\n\n\n", EOptimizer.PSO);
 	}
 	
+	public static void FFA(EFunction function, Serie serie){
+		
+		for (int bkwrd = 0; bkwrd <= 3; bkwrd++){
+			for (int ffrd = 1; ffrd <= 3; ffrd++){
+				if (firstTry && bkwrd == 0) continue;
+				//Adicionar label do logger
+				StaticLogger.add("Feedfoward: " + ffrd + ", Backward: " + bkwrd, EOptimizer.PSO);
+				System.out.println("Feedfoward: " + ffrd + ", Backward: " + bkwrd);
+				
+				//Adi��o da m�dia da lista de converg�ncias
+				Series.armaSerie = new Arma(serie, 120, ffrd, bkwrd);
+				
+				br.poli.sots.swarmintelligence.ffa.utils.Swarm s = new br.poli.sots.swarmintelligence.ffa.utils.Swarm(function);
+				
+				List<List<Double>> convergencePerIteration = new LinkedList<List<Double>>();
+				List<Double> bestErrorList = new LinkedList<Double>();
+				
+				for (int k = 0; k < Parameters.SAMPLE_COUNT; k++){
+					s.initializeSwarm();
+					s.updatePopulation(true);
+					convergencePerIteration.add(s.globalBestLog);
+					bestErrorList.add(s.globalBestLog.get(s.globalBestLog.size() - 1));
+				}
+			    StaticLogger.add(Common.CalculateAverageConvergence(convergencePerIteration), EOptimizer.FFA, "Convergence " + FireflyParticle.functionType + ": {", "}");
+			    
+			    //Erros totais
+			    StaticLogger.add(bestErrorList, EOptimizer.FFA, FireflyParticle.functionType + " per iteration: {", "}");
+			    
+			    //MSE da best			
+			    Series.armaSerie = new Arma(serie, 120, ffrd, bkwrd);
+				Series.armaSerie.setParameters(FireflyParticle.globalBestPosition);
+				Series.armaSerie.forecastAll();
+				StaticLogger.add(FireflyParticle.globalBestPosition, EOptimizer.FFA, "Parameters (" + ffrd + "Feedfoward, " + ffrd + " Backward) : {", "}");
+				
+				//As séries desazonalizada
+				StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.FFA, "Comparing (Deseasonalized) set: {", "}");
+				StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.FFA, "Forecastset (Deseasonalized) set: {", "}");
+				
+				//Erro quadrático médio (best) desazonalizado
+				Double mseError = MeanSquareError.instance.calculateFitness(FireflyParticle.globalBestPosition);
+				StaticLogger.add(mseError, EOptimizer.FFA, "Best Mean (Deseasonalized) mse: ", "");
+				
+				//Erro absoluto médio (best) desazonalizado
+				Double maeError = MeanAbsoluteError.instance.calculateFitness(FireflyParticle.globalBestPosition);
+				StaticLogger.add(maeError, EOptimizer.FFA, "Best Mean (Deseasonalized) mae: ", "");
+				
+				//Erro raiz quadrático (best) desazonalizado
+				Double rmseError = RootMeanSquareError.instance.calculateFitness(FireflyParticle.globalBestPosition);
+				StaticLogger.add(rmseError, EOptimizer.FFA, "Best Mean (Deseasonalized) rmse: ", "");
+				
+				//As séries desazonalizadas
+				Series.armaSerie.seasonalizeSerie();
+				StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.FFA, "Comparing (Seasonalized) set: {", "}");
+				StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.FFA, "Forecastset (Seasonalized) set: {", "}");
+				
+				//Erro quadrático médio (best) sazonalizado
+				mseError = MeanSquareError.instance.calculateFitness(FireflyParticle.globalBestPosition);
+				StaticLogger.add(mseError, EOptimizer.FFA, "Best Mean (Seasonalized) mse: ", "");
+				
+				//Erro absoluto médio (best) sazonalizado
+				maeError = MeanAbsoluteError.instance.calculateFitness(FireflyParticle.globalBestPosition);
+				StaticLogger.add(maeError, EOptimizer.FFA, "Best Mean (Seasonalized) mae: ", "");
+				
+				//Erro raiz quadrático (best) desazonalizado
+				rmseError = RootMeanSquareError.instance.calculateFitness(FireflyParticle.globalBestPosition);
+				StaticLogger.add(rmseError, EOptimizer.FFA, "Best Mean (Seasonalized) rmse: ", "");
+				
+				StaticLogger.add("\n", EOptimizer.FFA);
+			}
+		}
+		
+		firstTry = true;
+		
+		StaticLogger.add("\n\n\n", EOptimizer.PSO);
+	}
+	
 	public static void ABC(EFunction function, Serie serie){
 		StaticLogger.add(function + "\n", EOptimizer.ABC);
 		
 		for (int bkwrd = 0; bkwrd <= 3; bkwrd++){
 			for (int ffrd = 1; ffrd <= 3; ffrd++){
-				
+				if (firstTry && bkwrd == 0) continue;
 				//Adicionar label do logger
 				StaticLogger.add("Feedfoward: " + ffrd + ", Backward: " + bkwrd, EOptimizer.ABC);
 				System.out.println("Feedfoward: " + ffrd + ", Backward: " + bkwrd);
