@@ -53,7 +53,7 @@ public abstract class AbstractBeeParticle
         //Random distribution around the search space
         for (int i = 0; i < position.length; i++)
         {
-            position[i] = (function.BOUNDARY_MAX - function.BOUNDARY_MIN) * random.nextDouble() + function.BOUNDARY_MIN;
+            position[i] = (high - low) * random.nextDouble() + low;
         }
 
         positionPBest = position.clone();
@@ -82,7 +82,7 @@ public abstract class AbstractBeeParticle
     {
         double newPBest = function.calculateFitness(position);
         this.fitness = newPBest;
-        if (personalBest > newPBest)
+        if (personalBest >= newPBest)
         {
             //Update PBest and current Position
             positionPBest = position.clone();

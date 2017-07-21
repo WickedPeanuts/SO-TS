@@ -39,6 +39,7 @@ public class Swarm
             }
 
             if (saveFitnessLog){
+            	//System.out.println(AbstractBeeParticle.globalBest);
                 globalBestLog.add(AbstractBeeParticle.globalBest);
             }
             
@@ -51,10 +52,9 @@ public class Swarm
     
     public void workOn(AbstractBeeParticle particle){
     	AbstractBeeParticle mutate = particle.mutate(employedBeesList, employedBeesList.indexOf(particle));
+    	mutate.setAtempts(10);
     	if (mutate.fitness < particle.fitness){
     		particle = mutate;
-    		globalBestLog.add(mutate.fitness);
-    		//UPDATES GBEST
     	}else{
     		particle.setAtempts(particle.getAtempts()-1);
     	}
@@ -63,7 +63,6 @@ public class Swarm
     public void onlookerBeesPhase(){
     	//Work on random solutions, weighted to favor the promising ones.
     	double sumfitness = 0;
-    	Random r = new Random();
     	for (AbstractBeeParticle particle: employedBeesList){
     		sumfitness += particle.fitness;	
     	}
@@ -72,7 +71,7 @@ public class Swarm
     		int i = 0;
     		double random = ThreadLocalRandom.current().nextDouble(0, sumfitness);
     		
-    		while(employedBeesList.get(i).fitness < random){
+    		while(employedBeesList.get(i).fitness <= random){
     			random -= employedBeesList.get(i).fitness;
     			i++;
     		}
@@ -86,6 +85,7 @@ public class Swarm
     	for (AbstractBeeParticle particle: employedBeesList){
     		if (particle.getAtempts() <= 0){
     			particle = new Bee(function);
+    			particle.initialize();
     		}
     	}
     }

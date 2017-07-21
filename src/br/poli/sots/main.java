@@ -95,7 +95,7 @@ public class main {
 				StaticLogger.add("Feedfoward: " + ffrd + ", Backward: " + bkwrd, EOptimizer.PSO);
 				System.out.println("Feedfoward: " + ffrd + ", Backward: " + bkwrd);
 				
-				//Adição da média da lista de convergências
+				//Adiï¿½ï¿½o da mï¿½dia da lista de convergï¿½ncias
 				Series.armaSerie = new Arma(serie, 120, ffrd, bkwrd);
 				
 				Swarm s = new Swarm(topology, function, constriction);
@@ -175,12 +175,13 @@ public class main {
 				//AdiÃ§Ã£o da mÃ©dia da lista de convergÃªncias
 				Series.armaSerie = new Arma(serie, 120, ffrd, bkwrd);
 				
-				br.poli.sots.swarmintelligence.abc.Swarm s = new br.poli.sots.swarmintelligence.abc.Swarm(function);
+				
 				
 				List<List<Double>> convergencePerIteration = new LinkedList<List<Double>>();
 				List<Double> bestErrorList = new LinkedList<Double>();
 				
 				for (int k = 0; k < Parameters.SAMPLE_COUNT; k++){
+					br.poli.sots.swarmintelligence.abc.Swarm s = new br.poli.sots.swarmintelligence.abc.Swarm(function);
 					s.InitializeSwarm();
 					s.updatePopulation(true);
 					convergencePerIteration.add(s.globalBestLog);
