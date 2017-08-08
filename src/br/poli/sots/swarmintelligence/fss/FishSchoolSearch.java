@@ -1,16 +1,19 @@
 package br.poli.sots.swarmintelligence.fss;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import br.poli.sots.*;
 import br.poli.sots.swarmintelligence.pso.utils.*;
+import br.poli.sots.swarmintelligence.utils.AbstractFunction;
 import br.poli.sots.swarmintelligence.utils.EFunction;
 import br.poli.sots.swarmintelligence.utils.MeanSquareError;
 
 public class FishSchoolSearch {
 	private Fish[] school;
 	private Random rand;
-	private MeanSquareError problema;
+	//protected MeanSquareError problema;
 	private double[] bestPosition;
 	
 	private double stepIndPercentage;
@@ -19,9 +22,14 @@ public class FishSchoolSearch {
 	private int iterationsNumber;
 	private boolean isMinimumOptimization;
 	
-	public FishSchoolSearch(MeanSquareError problem){
+	protected static AbstractFunction problema;
+	public List<Double> listBestFitness;
+
+	
+	public FishSchoolSearch(EFunction problem){
 		rand = new Random();
-		this.problema = problem;
+		this.problema = AbstractFunction.instanceFunction(problem);
+		this.listBestFitness = new ArrayList<Double>();
 	}
 	
 	public void initializeSwarm(){
@@ -401,6 +409,7 @@ public double calculateSignalFromSchoolWeightVariation(){
 			updateBestPosition();
 			updateStepIndPercetage();
 			updateStepVolPercentage();
+			listBestFitness.add(getBestFitness());
 			System.out.println((getBestFitness()+ "").replace('.', ','));
 		}
 		System.out.println("Melhor Fitness = " + getBestFitness());
@@ -410,4 +419,7 @@ public double calculateSignalFromSchoolWeightVariation(){
 		return this.bestPosition;
 	}
 	
+	public List<Double> getListBestFitness() {
+		return this.listBestFitness;
+	}
 }

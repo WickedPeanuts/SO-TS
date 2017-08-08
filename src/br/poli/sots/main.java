@@ -27,17 +27,91 @@ public class main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//RunAllPSOSimulations(Series.emborcacao);
-		FFA(EFunction.MeanSquareError, Series.emborcacao);
-		FFA(EFunction.MeanSquareError, Series.furnas);
-		FFA(EFunction.MeanSquareError, Series.sobradinho);
+		//FFA(EFunction.MeanSquareError, Series.emborcacao);
+		//FFA(EFunction.MeanSquareError, Series.furnas);
+		//FFA(EFunction.MeanSquareError, Series.sobradinho);
 		
+		//StaticLogger.saveToFile();
+		
+		FSS();
 		StaticLogger.saveToFile();
 	}
 	
 	public static void FSS(){
 		MeanSquareError RMSE = (MeanSquareError) AbstractFunction.instanceFunction(EFunction.MeanSquareError);
-		FishSchoolSearch fss = new FishSchoolSearch(RMSE);
-		fss.Busca(10000, 1);
+		
+		FishSchoolSearch fss = new FishSchoolSearch(EFunction.RootMeanSquareError);
+		
+		StaticLogger.add("", EOptimizer.FSS);
+		for (int bkwrd = 0; bkwrd <= 3; bkwrd++){
+			for (int ffrd = 1; ffrd <= 3; ffrd++){
+				if (firstTry && bkwrd == 0) continue;
+				Parameters.UpdateParameters(ffrd, bkwrd);
+				
+				StaticLogger.add("Feedfoward: " + ffrd + ", Backward: " + bkwrd, EOptimizer.FSS);
+				System.out.println("Feedfoward: " + ffrd + ", Backward: " + bkwrd);
+				
+				Series.armaSerie = new Arma(Series.emborcacao, 120, ffrd, bkwrd);
+				fss.Busca(100, 1);
+				
+				List<List<Double>> convergencePerIteration = new LinkedList<List<Double>>();
+				List<Double> bestErrorList = new LinkedList<Double>();
+				for (int k = 0; k < Parameters.SAMPLE_COUNT; k++){
+					convergencePerIteration.add(fss.getListBestFitness());
+					bestErrorList.add(fss.getBestFitness());
+				}
+				
+				 StaticLogger.add(Common.CalculateAverageConvergence(convergencePerIteration), EOptimizer.FSS, "Convergence " + " FSS " + ": {", "}");
+				 
+				//Erros totais
+				    StaticLogger.add(bestErrorList, EOptimizer.FSS, " per iteration: {", "}");
+				 //MSE da best			
+				  Series.armaSerie = new Arma(Series.emborcacao, 120, ffrd, bkwrd);
+				  Series.armaSerie.setParameters(AbstractPSOParticle.positionGBest);
+				  Series.armaSerie.forecastAll();
+				  StaticLogger.add(AbstractPSOParticle.positionGBest, EOptimizer.PSO, "Parameters (" + ffrd + "Feedfoward, " + ffrd + " Backward) : {", "}");
+				 
+				
+				//As séries desazonalizada
+					StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.FSS, "Comparing (Deseasonalized) set: {", "}");
+					StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.FSS, "Forecastset (Deseasonalized) set: {", "}");
+					
+					//Erro quadrático médio (best) desazonalizado
+					Double mseError = MeanSquareError.instance.calculateFitness(fss.getBestPosition());
+					StaticLogger.add(mseError, EOptimizer.FSS, "Best Mean (Deseasonalized) mse: ", "");
+					
+					//Erro absoluto médio (best) desazonalizado
+					Double maeError = MeanAbsoluteError.instance.calculateFitness(fss.getBestPosition());
+					StaticLogger.add(maeError, EOptimizer.FSS, "Best Mean (Deseasonalized) mae: ", "");
+					
+					//Erro raiz quadrático (best) desazonalizado
+					Double rmseError = RootMeanSquareError.instance.calculateFitness(fss.getBestPosition());
+					StaticLogger.add(rmseError, EOptimizer.FSS, "Best Mean (Deseasonalized) rmse: ", "");
+					
+					//As séries desazonalizadas
+					Series.armaSerie.seasonalizeSerie();
+					StaticLogger.add(Series.armaSerie.serie.comparingSet, EOptimizer.FSS, "Comparing (Seasonalized) set: {", "}");
+					StaticLogger.add(Series.armaSerie.serie.forecastSet, EOptimizer.FSS, "Forecastset (Seasonalized) set: {", "}");
+					
+					//Erro quadrático médio (best) sazonalizado
+					mseError = MeanSquareError.instance.calculateFitness(fss.getBestPosition());
+					StaticLogger.add(mseError, EOptimizer.FSS, "Best Mean (Seasonalized) mse: ", "");
+					
+					//Erro absoluto médio (best) sazonalizado
+					maeError = MeanAbsoluteError.instance.calculateFitness(fss.getBestPosition());
+					StaticLogger.add(maeError, EOptimizer.FSS, "Best Mean (Seasonalized) mae: ", "");
+					
+					//Erro raiz quadrático (best) desazonalizado
+					rmseError = RootMeanSquareError.instance.calculateFitness(fss.getBestPosition());
+					StaticLogger.add(rmseError, EOptimizer.FSS, "Best Mean (Seasonalized) rmse: ", "");
+					
+					StaticLogger.add("\n", EOptimizer.FSS);
+					
+					
+				
+			}
+		}
+		
 		double[] particlePos = fss.getBestPosition();
 
 		Series.armaSerie.setParameters(particlePos);
