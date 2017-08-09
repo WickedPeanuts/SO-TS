@@ -410,9 +410,9 @@ public double calculateSignalFromSchoolWeightVariation(){
 			updateStepIndPercetage();
 			updateStepVolPercentage();
 			listBestFitness.add(getBestFitness());
-			System.out.println((getBestFitness()+ "").replace('.', ','));
+			//System.out.println((getBestFitness()+ "").replace('.', ','));
 		}
-		System.out.println("Melhor Fitness = " + getBestFitness());
+		//System.out.println("Melhor Fitness = " + getBestFitness());
 	}
 	
 	public double[] getBestPosition(){

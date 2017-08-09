@@ -8,12 +8,12 @@ public class Parameters {
 	
 	//PSO & FFA
 	public static int DIMENSION_AMOUNT = MAX_ARMA_FEEDFOWARD + MAX_ARMA_BACKWARD;
-	public static final int PARTICLE_AMOUNT = 30;
-	public static final int ITERATION_AMOUNT = 10000;
-	public static final int SAMPLE_COUNT = 30;
+	public static final int PARTICLE_AMOUNT = 5;
+	public static final int ITERATION_AMOUNT = 10;
+	public static final int SAMPLE_COUNT = 5;
 	
 	//FSS
-	public static final int SCHOOL_SIZE = 30;
+	public static final int SCHOOL_SIZE = 5;
 	public static final int DIMENSIONS = MAX_ARMA_FEEDFOWARD + MAX_ARMA_BACKWARD;
 	public static final int MIN_WEIGHT = 1;
 	public static final int MAX_WEIGHT = 5000;
@@ -32,8 +32,8 @@ public class Parameters {
 	
 	public static void UpdateParameters(int feed, int back){
 		DIMENSION_AMOUNT = feed + back;
-		MAX_ARMA_FEEDFOWARD = feed;
-		MAX_ARMA_BACKWARD = back;
+		//MAX_ARMA_FEEDFOWARD = feed;
+		//MAX_ARMA_BACKWARD = back;
 	}
 }
 
