@@ -15,6 +15,7 @@ public class FishSchoolSearch {
 	private Random rand;
 	//protected MeanSquareError problema;
 	private double[] bestPosition;
+	public static double[] globalBestPosition;
 	
 	private double stepIndPercentage;
 	private double stepVolPercentage;
@@ -36,13 +37,17 @@ public class FishSchoolSearch {
 		this.school = new Fish[Parameters.SCHOOL_SIZE];
 		double position[];
 		for(int i = 0; i < school.length; i++){
-			position = createRandomPosition(Parameters.DIMENSIONS);
+			position = createRandomPosition(Parameters.DIMENSION_AMOUNT);
 			this.school[i] = new Fish((double)(Parameters.MIN_WEIGHT + Parameters.MAX_WEIGHT)/2.0, position);
 		}
 	}
 	
 	public void initializeBestPosition(){
 		this.bestPosition = (double[]) school[0].getCurrentPosition().clone();
+	}
+	
+	public void initializeGlobalBestPosition(){
+		this.globalBestPosition = (double[]) school[0].getCurrentPosition().clone();
 	}
 	
 	public double[] createRandomPosition(int dimensions){
@@ -71,9 +76,9 @@ public class FishSchoolSearch {
 	}
 	
 	public double[] calculateIndividualDisplacement(double currentPosition[], double previousPosition[]){
-		double displacement[] = new double[Parameters.DIMENSIONS];
+		double displacement[] = new double[Parameters.DIMENSION_AMOUNT];
 		
-		for (int i = 0; i < Parameters.DIMENSIONS; i++) {
+		for (int i = 0; i < Parameters.DIMENSION_AMOUNT; i++) {
 			displacement[i] = currentPosition[i] - previousPosition[i];
 		}
 		return displacement;
@@ -89,12 +94,12 @@ public class FishSchoolSearch {
 	
 public double[] calculateBarycenter(){
 		
-		double barycenter[] = new double[Parameters.DIMENSIONS];
+		double barycenter[] = new double[Parameters.DIMENSION_AMOUNT];
 		double SomaPeso = calculateWeightSum();
 		double weightSumTimesPosition = 0;
 		//double positionSum = 0;
 		
-		for(int i = 0; i < Parameters.DIMENSIONS; i++){
+		for(int i = 0; i < Parameters.DIMENSION_AMOUNT; i++){
 			weightSumTimesPosition = 0;
 			for(int j = 0; j < school.length; j++){
 				weightSumTimesPosition += school[j].getWeight()*
@@ -108,14 +113,14 @@ public double[] calculateBarycenter(){
 
 public double[] calculateSumCollectiveMoviment(){
 	
-	double collectiveMoviment[] = new double[Parameters.DIMENSIONS];
+	double collectiveMoviment[] = new double[Parameters.DIMENSION_AMOUNT];
 	double schoolFitnessGain[] = schoolFitnessGain();//GANHO DE FITNESS DO CADURME
 	double fitnessGainSum = calculateFitnessGainSum();//SOMAT�RIO DO GANHO TOTAL DO CADURME
 	double fitnessTimesIndividualDisplacement = 0;
 	
 	//PARA QUE SERVE A �LTIMA VARIAVEL???
 	
-	for(int i = 0; i< Parameters.DIMENSIONS; i++){
+	for(int i = 0; i< Parameters.DIMENSION_AMOUNT; i++){
 		fitnessTimesIndividualDisplacement = 0;
 		for(int j = 0; j < school.length; j++){
 			if(school[j].isImprovedFitness()){
@@ -175,15 +180,15 @@ public double calculateFitnessGain(Fish peixe){
 
 public void volitiveMovement(){
 	
-	double position[] = new double[Parameters.DIMENSIONS];
+	double position[] = new double[Parameters.DIMENSION_AMOUNT];
 	double barycenter[] = calculateBarycenter();
 	double signal = calculateSignalFromSchoolWeightVariation();
 	double distanceToBarycenter;
 	
 	for(int i = 0; i < school.length; i++){
-		position = new double[Parameters.DIMENSIONS];
+		position = new double[Parameters.DIMENSION_AMOUNT];
 		distanceToBarycenter = euclidianDistance(school[i].getCurrentPosition(), barycenter);
-		for(int j = 0; j < Parameters.DIMENSIONS; j++){
+		for(int j = 0; j < Parameters.DIMENSION_AMOUNT; j++){
 			position[j] = school[i].getCurrentPosition()[j] + 
 					signal * stepVolPercentage * (problema.BOUNDARY_MAX - 
 							problema.BOUNDARY_MIN) * (school[i].getCurrentPosition()[j] - 
@@ -237,6 +242,18 @@ public double calculateSignalFromSchoolWeightVariation(){
 				problema.calculateFitness(this.bestPosition)){
 			this.bestPosition = (double[]) bestPosition.clone();
 		}
+	}
+	
+	public void updateGlobalBestPosition(){
+		double bestPosition[] = school[0].getCurrentPosition();
+		
+		for(int i = 1; i < school.length; i++){
+			if(problema.calculateFitness(getBestPosition()) < 
+					problema.calculateFitness(this.globalBestPosition)){
+				this.globalBestPosition = this.getBestPosition();
+			}
+		}
+		
 	}
 		
 	private void updateStepVolPercentage(){
@@ -325,13 +342,13 @@ public double calculateSignalFromSchoolWeightVariation(){
 	
 	public void movimentoColetivo(){
 		
-		double posicao[] = new double[Parameters.DIMENSIONS];
+		double posicao[] = new double[Parameters.DIMENSION_AMOUNT];
 		double sumCollectiveMoviment[] = calculateSumCollectiveMoviment();
 		
 		for(int i = 0; i < school.length; i++){
 			school[i].setPreviousPosition(school[i].getCurrentPosition());
-			posicao = new double[Parameters.DIMENSIONS];
-			for(int j = 0; j < Parameters.DIMENSIONS; j++){
+			posicao = new double[Parameters.DIMENSION_AMOUNT];
+			for(int j = 0; j < Parameters.DIMENSION_AMOUNT; j++){
 				posicao[j] = (school[i].getCurrentPosition()[j] + sumCollectiveMoviment[j]); 
 			}
 			school[i].setCurrentPosition(validatePosition(posicao));
@@ -397,26 +414,34 @@ public double calculateSignalFromSchoolWeightVariation(){
 		
 		initializeSwarm();
 		initializeBestPosition();
+		initializeGlobalBestPosition(); //Inicializar o globalBest apenas uma vez
 		stepIndPercentage = Parameters.STEP_IND_INIT;
 		stepVolPercentage = Parameters.STEP_VOL_INIT;
-		
-		for(int i = 0; i < iteracoes; i++){
-			localSearch();
-			setSchoolLocalSearchNewWeight();
-			movimentoColetivo();
-			volitiveMovement();
-			setSchoolNewWeight();
-			updateBestPosition();
-			updateStepIndPercetage();
-			updateStepVolPercentage();
-			listBestFitness.add(getBestFitness());
-			//System.out.println((getBestFitness()+ "").replace('.', ','));
+		for (int j = 0; j < simulacoes; j++) {
+			for(int i = 0; i < iteracoes; i++){
+				localSearch();
+				setSchoolLocalSearchNewWeight();
+				movimentoColetivo();
+				volitiveMovement();
+				setSchoolNewWeight();
+				updateBestPosition();
+				updateStepIndPercetage();
+				updateStepVolPercentage();
+				listBestFitness.add(getBestFitness());
+				//System.out.println((getBestFitness()+ "").replace('.', ','));
+			}
+			updateGlobalBestPosition();
 		}
+		
 		//System.out.println("Melhor Fitness = " + getBestFitness());
 	}
 	
 	public double[] getBestPosition(){
 		return this.bestPosition;
+	}
+	
+	public double[] getGlobalBestPosition() {
+		return this.globalBestPosition;
 	}
 	
 	public List<Double> getListBestFitness() {

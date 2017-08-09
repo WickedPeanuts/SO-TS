@@ -14,7 +14,6 @@ public class Parameters {
 	
 	//FSS
 	public static final int SCHOOL_SIZE = 5;
-	public static final int DIMENSIONS = MAX_ARMA_FEEDFOWARD + MAX_ARMA_BACKWARD;
 	public static final int MIN_WEIGHT = 1;
 	public static final int MAX_WEIGHT = 5000;
 	public static final double STEP_IND_INIT = 0.1;
